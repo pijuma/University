@@ -6,7 +6,7 @@ char x ;
 
 int main(){
 
-    scanf("%d%s", &n, &x) ; // Dúvida: pq tem que ler com %s e &x?? 
+    scanf("%d %c", &n, &x) ; // Dúvida: pq tem que ler com %s e &x?? 
 
     printf("Inteiro lido: %d\n", n) ; //imprime inteiro
     printf("Codigo hexadecimal: %x\n", n) ; // imprime na base hexadecimal
