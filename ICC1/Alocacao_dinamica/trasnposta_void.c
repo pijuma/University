@@ -29,9 +29,9 @@ void escreve(int n, int m, int *(**g)){
 
 }
 
-void apagar(int n, int *(**p)){ 
+void apagar(int n, int (**p)){ 
 
-	for(int i = 0 ; i < n ; i++) free((*p)[i]) ; 
+	for(int i = 0 ; i < n ; i++) free(p[i]) ; 
 
 	free(*p) ; 
 
@@ -61,7 +61,7 @@ int main(){
 	ler(n, m, &p) ; 
 	transposta(n, m, &p, &g) ; 
 	escreve(m, n, &g) ; 
-	apagar(n, &p) ; apagar(m, &g) ;//passo endereço do ponteiro - na função
+	apagar(n, p) ; apagar(m, g) ;//passo endereço do ponteiro - na função
 	// tem um ponteiro p esse endereço - assim consigo alterar direto nele 
 
 }
