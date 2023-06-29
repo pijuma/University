@@ -23,6 +23,7 @@ int main(int argc, char *argv[]){
     //outra forma de fazer: 
     /*c = fgetc(fp) ;
 
+    // feof verifica se a posição atual eh EOF 
     while(!feof(fp)){
         fputc(c, hh) ;
         c = fgetc(fp) ;
