@@ -1,0 +1,15 @@
+all: item.o pilha.o main.o
+	gcc item.o pilha.o main.c -o main -std=c99 -Wall -lm
+
+pilha.o:
+	gcc -c pilha.c -o pilha.o
+	
+item.o:
+	gcc -c item.c -o item.o
+
+run:
+	./main
+clean:
+	rm pilha.o
+	rm item.o
+	rm main
