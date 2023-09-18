@@ -9,13 +9,13 @@
     typedef struct lista_ LISTA ; 
     
     LISTA *criar() ; 
-    bool lista_inserir(LISTA *lista, int pos, ITEM *a) ;
-    ITEM *lista_remove(LISTA *lista, int pos) ;
-    int busca(LISTA *lista, int a) ;
+    bool lista_inserir(LISTA *lista, ITEM *a) ;
+    ITEM *lista_remove(LISTA *lista, ITEM *a) ;
     int lista_tamanho(LISTA *a) ;
     bool lista_vazia(LISTA *a); 
     bool lista_cheia(LISTA *a); 
     void lista_imprime(LISTA *a);
     void lista_find(LISTA *list, ITEM * a);
+    // a funcao busca pode deixar escondida 
 
 #endif
