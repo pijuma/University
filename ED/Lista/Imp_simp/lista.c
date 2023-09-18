@@ -15,37 +15,6 @@ LISTA *criar(){
 
 }
 
-bool lista_inserir(LISTA *lista, int pos, ITEM *a){ // insere em pos - O(N)
-
-    if(pos == -1) pos = lista->fim ; 
-
-    if(lista != NULL && !lista_cheia(lista) && pos <= lista -> fim){
-        for(int i = lista-> fim - 1 ; i >= pos ; i--){
-            lista -> list[i+1] = lista -> list[i] ;
-        }
-        lista->list[pos] = a ; 
-        lista->fim++ ; 
-        return 1 ; 
-    }
-    
-    return 0 ; 
-
-}
-
-ITEM *lista_remove(LISTA *lista, int pos){ // tira do começo 
-    
-    if(lista != NULL && !lista_vazia(lista) && pos >= lista->ini && pos <= lista->fim-1){
-        ITEM *b = lista->list[pos] ;
-        lista->list[pos] = NULL ; 
-        for(int i = pos + 1 ; i < lista->fim; i++) lista->list[i-1] = lista->list[i] ;
-        lista->fim-- ; 
-        return b ;
-    }
-
-    return NULL ; 
-
-}
-
 int busca(LISTA *lista, int a){ // achar o 1o elemento q tem valor >=a - onde irei colocar p manter a ordem 
 
     // busca binaria - O(log(n))
@@ -62,6 +31,41 @@ int busca(LISTA *lista, int a){ // achar o 1o elemento q tem valor >=a - onde ir
     }
 
     return best ; 
+
+}
+
+bool lista_inserir(LISTA *lista, ITEM *a){ // insere em pos - O(N)
+    
+    int pos = busca(lista, item_get_chave(a)) ;
+
+    if(pos == -1) pos = lista->fim ; 
+
+    if(lista != NULL && !lista_cheia(lista) && pos <= lista -> fim){
+        for(int i = lista-> fim - 1 ; i >= pos ; i--){
+            lista -> list[i+1] = lista -> list[i] ;
+        }
+        lista->list[pos] = a ; 
+        lista->fim++ ; 
+        return 1 ; 
+    }
+    
+    return 0 ; 
+
+}
+
+ITEM *lista_remove(LISTA *lista, ITEM *a){ // tira do começo 
+    
+    int pos = busca(lista, item_get_chave(a)) ;
+
+    if(lista != NULL && !lista_vazia(lista) && pos >= lista->ini && pos <= lista->fim-1){
+        ITEM *b = lista->list[pos] ;
+        lista->list[pos] = NULL ; 
+        for(int i = pos + 1 ; i < lista->fim; i++) lista->list[i-1] = lista->list[i] ;
+        lista->fim-- ; 
+        return b ;
+    }
+
+    return NULL ; 
 
 }
 
