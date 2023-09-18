@@ -1,5 +1,4 @@
 #ifndef LISTA_h
-    
     #define LISTA_h
     #include "item.h"
     #include<stdbool.h> 
@@ -10,8 +9,9 @@
     typedef struct lista_ LISTA ; 
     
     LISTA *criar() ; 
-    bool lista_inserir(LISTA *lista, ITEM *a) ;
+    bool lista_inserir(LISTA *lista, int pos, ITEM *a) ;
     ITEM *lista_remove(LISTA *lista, int pos) ;
+    int busca(LISTA *lista, int a) ;
     int lista_tamanho(LISTA *a) ;
     bool lista_vazia(LISTA *a); 
     bool lista_cheia(LISTA *a); 
