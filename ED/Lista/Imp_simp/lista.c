@@ -34,6 +34,21 @@ int busca(LISTA *lista, int a){ // achar o 1o elemento q tem valor >=a - onde ir
 
 }
 
+void lista_apagar(LISTA **lista){ // percorre tudo e aponta cada kra p null e da free nele depois da free na lista 
+    
+    if((*lista) != NULL){
+
+        for(int i = (*lista)->ini ; i < (*lista)->fim ; i++){
+            item_apagar(&((*lista)->lista[i])) ; 
+        }
+
+        free(*lista) ; 
+        *lista = NULL ; 
+
+    }
+
+}
+
 bool lista_inserir(LISTA *lista, ITEM *a){ // insere em pos - O(N)
     
     int pos = busca(lista, item_get_chave(a)) ;
