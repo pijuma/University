@@ -4,10 +4,10 @@
     imprimir todos os verbetes que começam 
     com letra "X"
     
-    inserção(s1, s2) -> insere palavra s1 com sig s2 
-    alterar(s1, s2) -> alterar definição de s1 pra s2 
+    OK inserção(s1, s2) -> insere palavra s1 com sig s2 
+    OK alterar(s1, s2) -> alterar definição de s1 pra s2 
     rem(s1) -> remover palavra s1 do dic 
-    busca(s1) -> imprime definição da palavra s1 
+    OK busca(s1) -> imprime definição da palavra s1 
     impressão(char c) -> imprime todas as palavras que começam 
     com caracter c -> em ord alf -> com a definição 
     palavra e definição em linhas diferentes 
@@ -41,7 +41,7 @@
 
 // declaração da struct do nó 
 struct NO_{ 
-    ITEM *at ; // cara atual 
+    ITEM *item ; // cara atual 
     struct NO_ *prox, *baixo; // cara da direita e cara que esta no nivel abaixo dele 
     int lvl; // nivel que ele esta
 } ; 
@@ -60,14 +60,21 @@ bool skip_vazia(SKIP *skip){ return skip->tam == 0 ; }
 SKIP *skip_criar(){
 
     SKIP *skip = (SKIP *) malloc(sizeof(SKIP)) ; 
-    
-    if(skip != NULL){ 
-        skip->mx_lvl = 0 ; 
+
+    if(skip == NULL) exit(1) ; 
+    else { 
+        
+        skip->mx_lvl = 0 ; skip->tam = 0 ; skip->ini = NULL ; // inicializa o skip
+
         NO *sentinela = (NO *) malloc(sizeof(NO)) ; 
-        if(sentinela == NULL) return NULL ; 
-        sentinela->lvl = 0 ; sentinela->at = NULL ;
-        sentinela->prox = sentinela->baixo = NULL ; 
-        skip->ini = sentinela ; skip->tam = 0 ; 
+        
+        if(sentinela == NULL) exit(1) ; 
+
+        sentinela->lvl = 0 ; sentinela->item = NULL ;
+        sentinela->prox = NULL ; sentinela->baixo = NULL ; 
+
+        skip->ini = sentinela ;
+
     }
 
     return skip ; 
@@ -76,32 +83,40 @@ SKIP *skip_criar(){
 
 ITEM *skip_busca_key(SKIP *skip, char *pal){
     
-    if(skip_vazia(skip)) return NULL ; 
+    if(skip == NULL || skip_vazia(skip)) return NULL ; 
+
     NO *atual = (skip->ini) ;
 
-    printf("estou tentando buscar %s:\n", pal) ; 
+    //printf("estou tentando buscar %s:\n", pal) ; 
 
-    while(atual->at != NULL){
-        
-        printf("tenho %s\n", atual->at) ;
+    while(atual != NULL){
 
-        if(!strcmp(pal, item_get_key(atual->at))) return atual->at ; 
+        if(atual->item != NULL && !strcmp(pal, item_get_key(atual->item))) return atual->item ;
 
-        if(atual->prox == NULL){ // desce 
+        else if(atual->prox == NULL){
             atual = atual->baixo ; 
         }
 
         else{
 
-            if(strcmp(item_get_key((atual->prox)->at), pal) > 0){//meu proximo é maior = devo descer
+            //if(atual->item != NULL) printf("tenho %s\n", item_get_key(atual->item)) ;
+
+            if(atual->item != NULL && !strcmp(pal, item_get_key(atual->item))){ 
+                //printf("achei um cara %s procurando %s\n", item_get_key(atual->item), pal) ; 
+                return atual->item ;
+            }
+
+            if(strcmp(item_get_key((atual->prox)->item), pal) > 0){//meu proximo é maior = devo descer
+                //printf("to no nivel %d procurando %s e meu proximo %s\n", atual->lvl, pal, item_get_key((atual->prox)->item)) ; 
                 atual = atual -> baixo ; 
             }
 
             else{ // senao continuo indo pra direita 
+                //printf("to no nivel %d procurando %s e meu proximo %s\n", atual->lvl, pal, item_get_key((atual->prox)->item)) ; 
                 atual = atual->prox ; 
             }
 
-        }
+        } 
 
     } 
 
@@ -124,74 +139,115 @@ int get_nivel() {
     return res;
 }
 
+void imprime_skip(SKIP *skip){
+
+    NO *cabeca = skip->ini ; 
+
+    while(cabeca != NULL){
+
+        printf("estou no nivel %d\n", cabeca->lvl) ; 
+        printf("passei por\n") ; 
+
+        for(NO *i = cabeca->prox ; i != NULL ; i = i->prox){
+            printf("%s ", item_get_key(i->item)) ; 
+            if(i->baixo != NULL){
+                printf("%s\n", item_get_key((i->baixo)->item)) ; 
+            }
+        }
+
+        printf("\n") ; 
+
+        cabeca = cabeca->baixo ; 
+
+    }
+
+}
+
 bool skip_inserir(SKIP *skip, ITEM *a){
 
-    printf("tentando inserir %s %s:\n", item_get_key(a), item_get_verb(a)) ; 
+    //printf("tentando inserir %s %s:\n", item_get_key(a), item_get_verb(a)) ; 
 
-    if(skip_busca_key(skip, item_get_key(a)) != NULL) return 0 ; 
+    //if(skip == NULL || skip_busca_key(skip, item_get_key(a)) != NULL) return 0 ; 
+
+    skip->tam++ ; 
 
     int nivel = get_nivel();
 
     printf("%d\n", nivel) ;
 
-    NO *at = skip->ini ; NO *ant = NULL ; 
+    NO *at = skip->ini ; 
     // o anterior é para caso eu tenha add ja algum 
     // e tenho que ligar de baixo com o meu atual agora
 
-    NO *nova_c ; nova_c = (NO *) malloc(sizeof(NO)) ;
-    NO *novo_ini = skip->ini ; 
-    skip->tam++ ; 
-
     if(at->lvl < nivel){ // tenho que criar novos nós cabeças 
-        novo_ini = nova_c ; 
-        int ct = nivel-at->lvl; 
+
+        int ct = nivel-(at->lvl); 
+        
         while(ct--){
+
             NO *criado = (NO *) malloc(sizeof(NO)) ;
-            criado->prox = criado->baixo = NULL ; 
-            criado->at = NULL ; 
-            criado->prox = NULL ; criado->lvl =  ct + (at->lvl); 
-            printf("add um nivel\n") ;
-            nova_c->baixo = criado ; 
-            nova_c = criado ; 
+
+            criado->prox = NULL ; criado->item = NULL ; 
+            criado->lvl =  1 + (at->lvl); 
+
+            //printf("add um nivel %d\n", criado->lvl) ;
+
+            criado->baixo = at ; 
+            at = criado ; 
+
         }
+
     }
 
-    if(skip->mx_lvl < nivel) skip->mx_lvl = nivel ;
+    skip->mx_lvl = at->lvl ; skip->ini = at ; 
     
-    skip->ini = novo_ini ; 
-    
+    NO *ant = NULL ; 
+
     while(at != NULL){
 
         if(at->prox == NULL){ // checa se o nivel dele é <= ao meu 
+
             if(at->lvl <= nivel){
+
                 NO *agr = (NO *)malloc(sizeof(NO)) ;
+
                 agr->lvl = at->lvl ; agr -> prox = NULL ; agr -> baixo = NULL ; 
-                agr -> at = a ;
+                agr -> item = a ;
                 at->prox = agr ; 
+
                 if(ant != NULL){// tenho que ligar o meu de cima com meu atual
                     ant->baixo = agr ;
                 }
+
                 ant = agr ;
+
             }
+
             at = at->baixo ; 
+
         }
 
         else{
 
-            printf("%s\n", item_get_key((at)->at)) ;
-            printf("%s\n", item_get_key((at->prox)->at)) ;
+            if(at->lvl > nivel) at = at->baixo ; //n devo add o meu ainda 
 
-            if(strcmp(item_get_key((at->prox)->at), item_get_key(a)) > 0){//tenho que add meu agr e dps descer 
+            else if(strcmp(item_get_key((at->prox)->item), item_get_key(a)) > 0){//tenho que add meu agr e dps descer 
+                
                 NO *agr = (NO *)malloc(sizeof(NO)) ;
-                agr->lvl = at->lvl ; agr -> prox = NULL ; agr -> baixo = NULL ; 
-                agr -> at = a ;
+
+                agr->lvl = at->lvl ; agr->prox = NULL ; agr->baixo = NULL ; 
+                agr->item = a ;
+
                 if(ant != NULL){
                     ant->baixo = agr ; 
                 }
+
                 agr->prox = at->prox ; 
                 at->prox = agr ; 
-                at = at -> baixo ;
+                at = at->baixo ;
+
                 ant = agr ;  
+
             }
 
             else{ // senao continuo indo pra direita 
@@ -201,6 +257,8 @@ bool skip_inserir(SKIP *skip, ITEM *a){
         }
 
     }
+
+    return 1 ; 
 
 }
 
@@ -212,8 +270,9 @@ bool skip_alterar(SKIP *skip, ITEM *a){
 
     while(at != NULL){
 
-        if(!strcmp(item_get_key(a), item_get_key(at->at))){// achei = tenho q alterar e descer nele 
-            item_set_verb(at->at, item_get_verb(a)) ;
+        if(at->item != NULL && !strcmp(item_get_key(a), item_get_key(at->item))){// achei = tenho q alterar e descer nele 
+            //printf("achou\n") ; 
+            item_set_verb(at->item, item_get_verb(a)) ;
             at = at->baixo ; 
         }
 
@@ -221,7 +280,7 @@ bool skip_alterar(SKIP *skip, ITEM *a){
 
             if(at->prox == NULL) at = at->baixo ; 
             else{
-                if(strcmp(item_get_key((at->prox)->at), item_get_key(a))>0) at = at->baixo ; 
+                if(strcmp(item_get_key((at->prox)->item), item_get_key(a))>0) at = at->baixo ; 
                 else at = at->prox ;  
             }
 
