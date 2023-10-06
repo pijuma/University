@@ -65,7 +65,7 @@ SKIP *skip_criar(){
         skip->mx_lvl = 0 ; 
         NO *sentinela = (NO *) malloc(sizeof(NO)) ; 
         if(sentinela == NULL) return NULL ; 
-        sentinela->lvl = 0 ; 
+        sentinela->lvl = 0 ; sentinela->at = NULL ;
         sentinela->prox = sentinela->baixo = NULL ; 
         skip->ini = sentinela ; skip->tam = 0 ; 
     }
@@ -79,8 +79,12 @@ ITEM *skip_busca_key(SKIP *skip, char *pal){
     if(skip_vazia(skip)) return NULL ; 
     NO *atual = (skip->ini) ;
 
-    while(atual != NULL){
+    printf("estou tentando buscar %s:\n", pal) ; 
+
+    while(atual->at != NULL){
         
+        printf("tenho %s\n", atual->at) ;
+
         if(!strcmp(pal, item_get_key(atual->at))) return atual->at ; 
 
         if(atual->prox == NULL){ // desce 
@@ -122,9 +126,13 @@ int get_nivel() {
 
 bool skip_inserir(SKIP *skip, ITEM *a){
 
+    printf("tentando inserir %s %s:\n", item_get_key(a), item_get_verb(a)) ; 
+
     if(skip_busca_key(skip, item_get_key(a)) != NULL) return 0 ; 
 
     int nivel = get_nivel();
+
+    printf("%d\n", nivel) ;
 
     NO *at = skip->ini ; NO *ant = NULL ; 
     // o anterior é para caso eu tenha add ja algum 
@@ -139,6 +147,10 @@ bool skip_inserir(SKIP *skip, ITEM *a){
         int ct = nivel-at->lvl; 
         while(ct--){
             NO *criado = (NO *) malloc(sizeof(NO)) ;
+            criado->prox = criado->baixo = NULL ; 
+            criado->at = NULL ; 
+            criado->prox = NULL ; criado->lvl =  ct + (at->lvl); 
+            printf("add um nivel\n") ;
             nova_c->baixo = criado ; 
             nova_c = criado ; 
         }
@@ -165,6 +177,9 @@ bool skip_inserir(SKIP *skip, ITEM *a){
         }
 
         else{
+
+            printf("%s\n", item_get_key((at)->at)) ;
+            printf("%s\n", item_get_key((at->prox)->at)) ;
 
             if(strcmp(item_get_key((at->prox)->at), item_get_key(a)) > 0){//tenho que add meu agr e dps descer 
                 NO *agr = (NO *)malloc(sizeof(NO)) ;
@@ -215,3 +230,4 @@ bool skip_alterar(SKIP *skip, ITEM *a){
     }
 
 }
+
