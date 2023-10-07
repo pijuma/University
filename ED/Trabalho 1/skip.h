@@ -10,5 +10,8 @@
     bool skip_inserir(SKIP *skip, ITEM *a);
     void imprime_skip(SKIP *skip);
     bool skip_alterar(SKIP *skip, ITEM *a);
+    bool skip_remover(SKIP *skip, char *a);
+    bool skip_imprime_char(SKIP *skip, char a);
+    void skip_apagar(SKIP **skip);
     
 #endif
