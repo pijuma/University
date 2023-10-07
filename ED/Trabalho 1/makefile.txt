@@ -9,21 +9,7 @@ item.o:
 
 run:
 	./main
-clean:all: item.o lista.o main.o
-	gcc item.o lista.o main.c -o main -std=c99 -Wall -lm
-
-lista.o:
-	gcc -c lista.c -o lista.o
-	
-item.o:
-	gcc -c item.c -o item.o
-
-run:
-	./main
 clean:
-	rm lista.o
-	rm item.o
-	rm main
 	rm lista.o
 	rm item.o
 	rm main
