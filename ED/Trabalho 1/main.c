@@ -4,41 +4,76 @@
 #include<string.h> 
 #include<time.h> 
 
+void make_insertion(SKIP *skip){
+
+    char a[55], b[145] ;
+    scanf(" %s", a) ; 
+    scanf(" %[^\n]s", b) ;
+
+    ITEM *at = item_criar(a, b) ; 
+    
+    if(!skip_inserir(skip, at))
+        printf("OPERACAO INVALIDA\n") ; 
+
+}
+
+void alterar(SKIP *skip){
+    
+    char a[55], b[145] ;
+    scanf(" %s", a) ; 
+    scanf(" %[^\n]s", b) ;
+
+    ITEM *at = item_criar(a, b) ; 
+
+    if(!skip_alterar(skip, at)) 
+        printf("OPERACAO INVALIDA\n") ; 
+
+}
+
+void remover(SKIP *skip){
+
+    char a[55];
+    scanf(" %s", a) ;
+
+    if(!skip_remover(skip, a))  
+        printf("OPERACAO INVALIDA\n") ; 
+
+}
+
+void buscar(SKIP *skip){
+
+    char a[55]; 
+    scanf(" %s", a) ; 
+
+    ITEM *at = skip_busca_key(skip, a) ;
+
+    printf("%s %s\n", a, item_get_verb(at)) ;
+
+}
+
+void impressao(SKIP *skip){
+
+    char a ; scanf(" %c", &a) ; 
+
+    if(!skip_imprime_char(skip, a)) 
+        printf("NAO HA PALAVRAS INICIADAS POR %c\n", a) ; 
+
+}
+
 int main(){
 
     SKIP *lista = skip_criar();
     int n ; scanf("%d", &n) ; 
 
     for(int i = 0 ; i < n ; i++){
-        char a[55], b[145] ;
-        scanf(" %s", a) ; 
-        scanf(" %[^\n]s", b) ;
-        printf("%s %s\n", a, b) ; 
-        ITEM *at = item_criar(a, b) ;
-        skip_inserir(lista, at) ;
-    }
-    
-    //imprime_skip(lista) ; 
-    
-    char c[55] ;
-    scanf(" %s", c) ; 
-    ITEM *r = skip_busca_key(lista, c) ;
-    if(r == NULL) printf("Nao achei\n") ; 
-    else{
-        char *resp = item_get_verb(r) ;
-        printf("%s\n", resp) ; 
+        char t[55] ; scanf(" %s", t) ; 
+        if(!strcmp(t, "insercao")) make_insertion(lista) ; 
+        else if(!strcmp(t, "alteracao")) alterar(lista) ; 
+        else if(!strcmp(t, "remocao")) remover(lista) ;
+        else if(!strcmp(t, "busca")) buscar(lista) ; 
+        else impressao(lista) ;  
     }
 
-    char d[145] ;
-    scanf(" %s", d) ;
-    ITEM *neww = item_criar(c, d) ;
-    skip_alterar(lista, neww) ;  
-    
-    r = skip_busca_key(lista, c) ;
-    if(r == NULL) printf("Nao achei\n") ; 
-    else{
-        char *resp = item_get_verb(r) ;
-        printf("%s\n", resp) ; 
-    }
+    skip_apagar(&lista);
 
 }
