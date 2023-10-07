@@ -1,45 +1,40 @@
 /*
+    Trabalho 1 - implementação de um dicionário com uso de skiplist
 
-    inserção remoção alterar busca
-    imprimir todos os verbetes que começam 
-    com letra "X"
-    
-    OK inserção(s1, s2) -> insere palavra s1 com sig s2 
-    OK alterar(s1, s2) -> alterar definição de s1 pra s2 
-    rem(s1) -> remover palavra s1 do dic 
-    OK busca(s1) -> imprime definição da palavra s1 
-    impressão(char c) -> imprime todas as palavras que começam 
-    com caracter c -> em ord alf -> com a definição 
-    palavra e definição em linhas diferentes 
+    Pietra Gullo Salgado Chaves - 14603822
+    Bruno Figueiredo Lima - 14562383
 
-    se der ruim -> operação invalida 
-    n achou palavras que começam com c -> nao ha palavras iniciadas por c
+    Para o projeto foi implementada uma skiplist encadeada e com cabeça, essa que facilita as operações
+    de remoção, inserção busca e encadeada pois não sabemos quantos elementos teremos logo fazê-la estática fica
+    custoso e inviável
 
-    palavra tem até 50 caracteres e verbete ate 140 caracteres 
+    A skiplist foi utilizada no intuito de reduzir a complexidade do algoritmo, já que sem a skiplist para alterar, inserir, remover
+    e fazer busca, por exemplo, todas operações seriam no minimo O(N) pois teriamos que percorrer a lista inteira no pior caso 
+    Assim, com uso de skiplist, escolhendo os niveis de forma randomizada podemos acelerar as operações citadas "pulando" elementos que não 
+    irão fazer diferença em listas de níveis superiores (que não terão todos os elementos da original), assim acelerando o algoritmo 
 
-    skiplist:
-    considera nós acima e abaixo - agrupamento  vertical de listas 
-    organizada em niveis - cada nivel eh uma lista 
-    a cabeça do nivel tem um ponteiro p prox lista 
-    cada nivel contem um numero aleatorio de nós 
-    só a lista maix baixa tem todos nós 
+    as operações requeridas e implementadas foram: 
+    inserção(s1, s2) -> insere palavra s1 com verbete s2 
+    alterar(s1, s2) -> alterar definição de s1 pra s2 
+    rem(s1) -> remover palavra s1 do dicionário 
+    busca(s1) -> imprime definição da palavra s1 
+    impressão(char c) -> imprime todas as palavras que começam com o caracter c e seus respectivos verbetes
 
-    criar a lista - ok 
-    pra cada nó guarda o nivel dele o prox (direita) e o debaixo 
-    na hora de inserir procura o ultimo kra <= a mim qd eu achei eu desço 
-    tudo - guardando os nós q eu passei (posso ter q mudar o prox - dir desses) 
-    salva eles num array de tamanho[niveis_lista]
-    se o valor ja ta presente - nao insere dnv 
-
+    Como extra, implementamos as funções (pois vimos utilidade para debugar/executar as outras):
+    skip_vazia -> para checar se a lista tem elementos 
+    get_nivel -> para gerar o nivel do nosso nó de forma randomica
+    imprime_skip -> para debugar, utilizada para checar se a lista foi montada corretamente 
+    skip_apagar -> para desalocar a memória utilizada 
 
 */
+
 #include<stdio.h>
 #include<stdlib.h> 
 #include<string.h> 
 #include<time.h> 
 #include "lista.h"
 
-// declaração da struct do nó 
+// declaração da struct do no
 struct NO_{ 
     ITEM *item ; // cara atual 
     struct NO_ *prox, *baixo; // cara da direita e cara que esta no nivel abaixo dele 
@@ -53,8 +48,7 @@ struct SKIP_L{
     NO *ini ; // no cabeça inicial - cara maix acima 
 } ;
 
-// criando nossa skip list 
-
+// checar se a skip list está vazia 
 bool skip_vazia(SKIP *skip){ return skip->tam == 0 ; }
 
 SKIP *skip_criar(){
@@ -87,8 +81,6 @@ ITEM *skip_busca_key(SKIP *skip, char *pal){
 
     NO *atual = (skip->ini) ;
 
-    //printf("estou tentando buscar %s:\n", pal) ; 
-
     while(atual != NULL){
 
         if(atual->item != NULL && !strcmp(pal, item_get_key(atual->item))) return atual->item ;
@@ -99,20 +91,13 @@ ITEM *skip_busca_key(SKIP *skip, char *pal){
 
         else{
 
-            //if(atual->item != NULL) printf("tenho %s\n", item_get_key(atual->item)) ;
-
-            if(atual->item != NULL && !strcmp(pal, item_get_key(atual->item))){ 
-                //printf("achei um cara %s procurando %s\n", item_get_key(atual->item), pal) ; 
-                return atual->item ;
-            }
+            if(atual->item != NULL && !strcmp(pal, item_get_key(atual->item))) return atual->item ;
 
             if(strcmp(item_get_key((atual->prox)->item), pal) > 0){//meu proximo é maior = devo descer
-                //printf("to no nivel %d procurando %s e meu proximo %s\n", atual->lvl, pal, item_get_key((atual->prox)->item)) ; 
                 atual = atual -> baixo ; 
             }
 
             else{ // senao continuo indo pra direita 
-                //printf("to no nivel %d procurando %s e meu proximo %s\n", atual->lvl, pal, item_get_key((atual->prox)->item)) ; 
                 atual = atual->prox ; 
             }
 
@@ -145,9 +130,6 @@ void imprime_skip(SKIP *skip){
 
     while(cabeca != NULL){
 
-        printf("estou no nivel %d\n", cabeca->lvl) ; 
-        printf("passei por\n") ; 
-
         for(NO *i = cabeca->prox ; i != NULL ; i = i->prox){
             printf("%s ", item_get_key(i->item)) ; 
             if(i->baixo != NULL){
@@ -165,9 +147,7 @@ void imprime_skip(SKIP *skip){
 
 bool skip_inserir(SKIP *skip, ITEM *a){
 
-    //printf("tentando inserir %s %s:\n", item_get_key(a), item_get_verb(a)) ; 
-
-    //if(skip == NULL || skip_busca_key(skip, item_get_key(a)) != NULL) return 0 ; 
+    if(skip == NULL || skip_busca_key(skip, item_get_key(a)) != NULL) return 0 ; 
 
     skip->tam++ ; 
 
@@ -189,8 +169,6 @@ bool skip_inserir(SKIP *skip, ITEM *a){
 
             criado->prox = NULL ; criado->item = NULL ; 
             criado->lvl =  1 + (at->lvl); 
-
-            //printf("add um nivel %d\n", criado->lvl) ;
 
             criado->baixo = at ; 
             at = criado ; 
@@ -268,10 +246,12 @@ bool skip_alterar(SKIP *skip, ITEM *a){
 
     NO *at = skip->ini ; 
 
+    int mudei = 0 ; 
+
     while(at != NULL){
 
         if(at->item != NULL && !strcmp(item_get_key(a), item_get_key(at->item))){// achei = tenho q alterar e descer nele 
-            //printf("achou\n") ; 
+            mudei = 1 ;  
             item_set_verb(at->item, item_get_verb(a)) ;
             at = at->baixo ; 
         }
@@ -288,5 +268,160 @@ bool skip_alterar(SKIP *skip, ITEM *a){
 
     }
 
+    return mudei ; 
+
 }
 
+bool skip_remover(SKIP *skip, char *a){
+
+    if(skip == NULL || skip_vazia(skip)) return 0 ; 
+
+    NO *at = skip->ini ;
+    int achei = 0 ; 
+
+    while(at != NULL){
+
+        if(at->item == NULL){ // nó cabeça
+            
+            if(at->prox == NULL) at = at->baixo ; // n tenho pra onde ir 
+
+            else{
+                
+                if(strcmp(item_get_key((at->prox)->item), a) > 0) at = at->baixo ; // n tem ngm meu naql nivel
+                
+                else{ // tenho que apagar meu proximo? 
+
+                    if(!strcmp(item_get_key((at->prox)->item), a)){ // tenho q apagar meu prox
+                        
+                        achei = 1 ;
+                        
+                        NO *mid = at->prox ;
+                        at->prox = mid->prox ; 
+
+                        mid->prox = NULL ; free(mid) ; 
+
+                        at = at->baixo ; 
+
+                    }
+
+                    else at = at->prox ; 
+
+                }
+
+            }
+
+        }
+
+        else{
+
+            if(!strcmp(item_get_key((at->prox)->item), a)){ // tenho que apagar 
+                
+                achei = 1 ; // apaguei algum cara 
+
+                NO *mid = at->prox ; 
+                at -> prox = mid->prox ; 
+
+                mid->prox = NULL ; free(mid) ;
+                at = at->baixo ;
+
+            }
+
+            else{
+
+                if(strcmp(item_get_key((at->prox)->item), a) > 0) at = at->baixo ; 
+                else at = at->prox ; 
+
+            } 
+
+        }
+
+    }
+
+    return achei ; 
+
+}
+
+// imprime todas as palavras que começam com a letra "a" - em ord alfabética
+bool skip_imprime_char(SKIP *skip, char a){
+
+    NO *at = skip->ini ; 
+
+    while(at!=NULL){
+
+        // quero ver o prox - se o prox n vai me satisfazer mais eu desço no meu 
+
+        if(at->prox == NULL) at = at->baixo ; // tenho que descer 
+
+        else{
+
+            // to no array completo e achei onde começa oq quero imprimir 
+
+            if(at->baixo == NULL && at->prox != NULL && a == item_get_key((at->prox)->item)[0]){ // achei e to em cabeça
+
+                for(NO *i = at->prox ; i != NULL ; i = i->prox){
+                    printf("%s %s\n", item_get_key(i->item), item_get_verb(i->item)) ; 
+                }
+
+                return 1 ; 
+            
+            }
+
+            else if(at->item != NULL && at->baixo == NULL && a == item_get_key(at->item)[0]){ // achei e nao to em cabeça
+
+                for(NO *i = at ; i != NULL ; i = i->prox){
+                    printf("%s %s\n", item_get_key(i->item), item_get_verb(i->item)) ; 
+                }
+
+                return 1 ; 
+            
+            }
+
+            else if(a -'a' <= (item_get_key((at->prox)->item))[0]-'a'){ // tenho que descer no meu atual 
+                at = at->baixo ; 
+            }
+
+            else{
+                at = at->prox ; 
+            }
+
+        }
+
+    }
+
+    return 0 ;
+
+}
+
+void liberar_no_lista(NO **i){
+
+    if((*i) == NULL) return ; 
+    
+    liberar_no_lista(&((*i)->prox));
+
+    (*i)->prox = NULL ;
+    free(*i); i = NULL ; 
+}
+
+void liberar_nos_cabecas(NO **i){
+    
+    if((*i) == NULL) return ; 
+
+    liberar_nos_cabecas(&((*i)->baixo));
+
+    (*i)->baixo = NULL ;
+    free(*i); (*i) = NULL ; 
+
+}
+
+void skip_apagar(SKIP **skip){
+
+    for(NO *i = (*skip)->ini ; i != NULL ; i = i->baixo){ // liberar lista
+        if(i->prox != NULL) liberar_no_lista(&(i->prox));
+    }
+
+    liberar_nos_cabecas(&((*skip)->ini));
+
+    free(*skip);
+    *skip = NULL ; 
+
+}
