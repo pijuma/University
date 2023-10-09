@@ -2,14 +2,13 @@
 #include<stdlib.h> 
 #include<stdbool.h>
 
-void shell_sort(int *v, int n){
+void shell(int *v, int n){
 
     int h = 1 ; 
 
-    for(h = 1 ; h < n ; h = (h*3) + 1) ; 
+    for(h = 1 ; h < n/3 ; h = (h*3) + 1) ; 
 
-    while(h > 0){
-        h = (h-1)/3 ; 
+    while(h > 0){ 
         for(int i = 1 ; i < n ; i++){
             int valor_at = v[i] ; 
             int j = i ; // considera q ate j ta ordenado 
@@ -20,6 +19,7 @@ void shell_sort(int *v, int n){
             }
             v[j] = valor_at ; 
         }
+        h = (h-1)/3 ;
     }
 
 }
