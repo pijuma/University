@@ -111,8 +111,6 @@ ITEM *skip_busca_key(SKIP *skip, char *pal){
 
 int get_nivel() {
 
-    srand((unsigned)time(NULL));
-
     int res = 0;
 
     while(true) {
@@ -153,7 +151,7 @@ bool skip_inserir(SKIP *skip, ITEM *a){
 
     int nivel = get_nivel();
 
-    printf("%d\n", nivel) ;
+    //printf("%d\n", nivel) ;
 
     NO *at = skip->ini ; 
     // o anterior é para caso eu tenha add ja algum 
@@ -298,7 +296,8 @@ bool skip_remover(SKIP *skip, char *a){
                         NO *mid = at->prox ;
                         at->prox = mid->prox ; 
 
-                        mid->prox = NULL ; free(mid) ; 
+                        free(mid) ;
+                        mid->prox = NULL ;  
 
                         at = at->baixo ; 
 
@@ -358,7 +357,7 @@ bool skip_imprime_char(SKIP *skip, char a){
 
             if(at->baixo == NULL && at->prox != NULL && a == item_get_key((at->prox)->item)[0]){ // achei e to em cabeça
 
-                for(NO *i = at->prox ; i != NULL ; i = i->prox){
+                for(NO *i = at->prox ; i != NULL && a == item_get_key((i)->item)[0] ; i = i->prox){
                     printf("%s %s\n", item_get_key(i->item), item_get_verb(i->item)) ; 
                 }
 
@@ -368,7 +367,7 @@ bool skip_imprime_char(SKIP *skip, char a){
 
             else if(at->item != NULL && at->baixo == NULL && a == item_get_key(at->item)[0]){ // achei e nao to em cabeça
 
-                for(NO *i = at ; i != NULL ; i = i->prox){
+                for(NO *i = at ; i != NULL && a == item_get_key((i)->item)[0] ; i = i->prox){
                     printf("%s %s\n", item_get_key(i->item), item_get_verb(i->item)) ; 
                 }
 
