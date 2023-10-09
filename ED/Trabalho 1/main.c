@@ -47,7 +47,8 @@ void buscar(SKIP *skip){
 
     ITEM *at = skip_busca_key(skip, a) ;
 
-    printf("%s %s\n", a, item_get_verb(at)) ;
+    if(at == NULL) printf("OPERACAO INVALIDA\n") ; 
+    else printf("%s %s\n", a, item_get_verb(at)) ;
 
 }
 
@@ -62,11 +63,15 @@ void impressao(SKIP *skip){
 
 int main(){
 
-    SKIP *lista = skip_criar();
-    int n ; scanf("%d", &n) ; 
+    srand(time(NULL));
 
-    for(int i = 0 ; i < n ; i++){
-        char t[55] ; scanf(" %s", t) ; 
+    SKIP *lista = skip_criar();
+
+    //int n ; scanf("%d", &n) ;
+    
+    char t[55] ;
+
+    while(scanf(" %s", t) != EOF){
         if(!strcmp(t, "insercao")) make_insertion(lista) ; 
         else if(!strcmp(t, "alteracao")) alterar(lista) ; 
         else if(!strcmp(t, "remocao")) remover(lista) ;
