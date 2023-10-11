@@ -13,7 +13,7 @@ typedef struct NO_ NO ;
 
 struct pilha_{
     ITEM *itens[maxn] ;
-    int fim; 
+    int fim, tam; 
 } ;
 
 PILHA *pilha_criar(){
@@ -21,7 +21,7 @@ PILHA *pilha_criar(){
     PILHA *p = (PILHA *) malloc(sizeof(PILHA)) ;
 
     if(p != NULL){
-        p->fim = -1 ; 
+        p->fim = 0 ; 
     }
 
     return p ; 
@@ -29,7 +29,7 @@ PILHA *pilha_criar(){
 }
 
 int tam(PILHA *p){ return p->fim ; }
-bool pilha_vazia(PILHA *pilha){ return (pilha->fim == -1) ;}
+bool pilha_vazia(PILHA *pilha){ return (pilha->tam == 0) ;}
 bool pilha_cheia(PILHA *pilha){ return pilha->fim>=maxn ; }
 
 ITEM *pilha_topo(PILHA *p){ return p->itens[p->fim-1] ; }
@@ -37,7 +37,7 @@ ITEM *pilha_topo(PILHA *p){ return p->itens[p->fim-1] ; }
 ITEM *pop(PILHA *p){
     if(p == NULL || pilha_vazia(p)) return NULL ; 
     ITEM *at = p->itens[p->fim-1] ; 
-    p->fim-- ; 
+    p->fim-- ; p->tam-- ; 
     return at ;  
 }
 
@@ -45,7 +45,7 @@ bool push(PILHA *p, ITEM *x){
 
     if(pilha_cheia(p) || p == NULL) return 0 ; 
 
-    p->itens[p->fim++] = x ; 
+    p->itens[p->fim++] = x ; p->tam++ ; 
 
     return 1 ; 
 
