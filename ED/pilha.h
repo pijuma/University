@@ -9,7 +9,7 @@
 
     PILHA *pilha_criar() ; 
 
-    bool pilha_apagar(PILHA *pilha) ; 
+    bool pilha_apagar(PILHA **pilha) ; 
 
     ITEM *top(PILHA *pilha) ; 
 
