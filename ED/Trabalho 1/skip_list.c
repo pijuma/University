@@ -32,7 +32,7 @@
 #include<stdlib.h> 
 #include<string.h> 
 #include<time.h> 
-#include "lista.h"
+#include "skip.h"
 
 // declaração da struct do no
 struct NO_{ 
@@ -53,14 +53,14 @@ bool skip_vazia(SKIP *skip){ return skip->tam == 0 ; }
 
 SKIP *skip_criar(){
 
-    SKIP *skip = (SKIP *) malloc(sizeof(SKIP)) ; 
+    SKIP *skip = (SKIP *) malloc(sizeof(SKIP)) ;
 
     if(skip == NULL) exit(1) ; 
     else { 
         
         skip->mx_lvl = 0 ; skip->tam = 0 ; skip->ini = NULL ; // inicializa o skip
 
-        NO *sentinela = (NO *) malloc(sizeof(NO)) ; 
+        NO *sentinela = (NO *) malloc(sizeof(NO)) ;
         
         if(sentinela == NULL) exit(1) ; 
 
@@ -110,7 +110,6 @@ ITEM *skip_busca_key(SKIP *skip, char *pal){
 }
 
 int get_nivel() {
-
     int res = 0;
 
     while(true) {
@@ -163,7 +162,7 @@ bool skip_inserir(SKIP *skip, ITEM *a){
         
         while(ct--){
 
-            NO *criado = (NO *) malloc(sizeof(NO)) ;
+            NO *criado = (NO *) malloc(sizeof(NO)) ; 
 
             criado->prox = NULL ; criado->item = NULL ; 
             criado->lvl =  1 + (at->lvl); 
@@ -185,7 +184,7 @@ bool skip_inserir(SKIP *skip, ITEM *a){
 
             if(at->lvl <= nivel){
 
-                NO *agr = (NO *)malloc(sizeof(NO)) ;
+                NO *agr = (NO *)malloc(sizeof(NO)) ; 
 
                 agr->lvl = at->lvl ; agr -> prox = NULL ; agr -> baixo = NULL ; 
                 agr -> item = a ;
@@ -240,7 +239,9 @@ bool skip_inserir(SKIP *skip, ITEM *a){
 
 bool skip_alterar(SKIP *skip, ITEM *a){
 
-    if(skip == NULL || skip_vazia(skip) || !skip_busca_key(skip, item_get_key(a))) return 0 ; 
+    if(skip == NULL || skip_vazia(skip) || !skip_busca_key(skip, item_get_key(a))) {
+        item_apagar(&a); return false;
+    }
 
     NO *at = skip->ini ; 
 
@@ -266,13 +267,15 @@ bool skip_alterar(SKIP *skip, ITEM *a){
 
     }
 
+    item_apagar(&a);
+
     return mudei ; 
 
 }
 
 bool skip_remover(SKIP *skip, char *a){
 
-    if(skip == NULL || skip_vazia(skip)) return 0 ; 
+    if(skip == NULL || skip_vazia(skip) || !skip_busca_key(skip, a)) return 0 ; 
 
     NO *at = skip->ini ;
     int achei = 0 ; 
@@ -284,7 +287,7 @@ bool skip_remover(SKIP *skip, char *a){
             if(at->prox == NULL) at = at->baixo ; // n tenho pra onde ir 
 
             else{
-                
+
                 if(strcmp(item_get_key((at->prox)->item), a) > 0) at = at->baixo ; // n tem ngm meu naql nivel
                 
                 else{ // tenho que apagar meu proximo? 
@@ -293,14 +296,19 @@ bool skip_remover(SKIP *skip, char *a){
                         
                         achei = 1 ;
                         
+                        
+
                         NO *mid = at->prox ;
                         at->prox = mid->prox ; 
 
-                        free(mid) ;
-                        mid->prox = NULL ;  
+
+                        if (mid != NULL) {
+                            item_apagar(&(mid->item));
+                            free(mid) ;
+                            mid->prox = NULL ;
+                        }
 
                         at = at->baixo ; 
-
                     }
 
                     else at = at->prox ; 
@@ -312,25 +320,37 @@ bool skip_remover(SKIP *skip, char *a){
         }
 
         else{
+            if (at->prox != NULL) {
+                    if(!strcmp(item_get_key((at->prox)->item), a)){ // tenho que apagar 
+                    
+                    achei = 1 ; // apaguei algum cara 
 
-            if(!strcmp(item_get_key((at->prox)->item), a)){ // tenho que apagar 
-                
-                achei = 1 ; // apaguei algum cara 
+                    NO *mid = at->prox ; 
+                    at -> prox = mid->prox ; 
 
-                NO *mid = at->prox ; 
-                at -> prox = mid->prox ; 
+                    if (mid != NULL) {
+                        item_apagar(&(mid->item));
+                        free(mid) ;
+                        mid->prox = NULL ;
+                    }
+                    
+                    
+                    at = at->baixo ;
 
-                mid->prox = NULL ; free(mid) ;
-                at = at->baixo ;
+                }
 
-            }
+                else{
 
-            else{
+                    if(strcmp(item_get_key((at->prox)->item), a) > 0) at = at->baixo ; 
+                    else at = at->prox ; 
 
-                if(strcmp(item_get_key((at->prox)->item), a) > 0) at = at->baixo ; 
-                else at = at->prox ; 
-
+                } 
+            } else {
+                at = at->baixo;
             } 
+
+
+            
 
         }
 
@@ -408,11 +428,20 @@ void liberar_nos_cabecas(NO **i){
     liberar_nos_cabecas(&((*i)->baixo));
 
     (*i)->baixo = NULL ;
+    item_apagar(&(*i)->item);
     free(*i); (*i) = NULL ; 
 
 }
 
 void skip_apagar(SKIP **skip){
+
+    for(NO *i = (*skip)->ini ; i != NULL ; i = i->baixo) {
+        if (i->baixo == NULL) {
+            for(NO* j = i; j != NULL; j = j->prox) {
+                item_apagar(&(j->item));
+            }
+        }
+    }
 
     for(NO *i = (*skip)->ini ; i != NULL ; i = i->baixo){ // liberar lista
         if(i->prox != NULL) liberar_no_lista(&(i->prox));
@@ -422,5 +451,4 @@ void skip_apagar(SKIP **skip){
 
     free(*skip);
     *skip = NULL ; 
-
 }
