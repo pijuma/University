@@ -1,6 +1,6 @@
 /*
 nao esta implementada totalmente bonitinha (vulgo n coloquei checkers etc)
-Implementação sequencial da pilha e estatica 
+Implementação encadeada da pilha e estatica 
 (nao tem como fazer implementacao estatica com uso de TAD)
 a pilha adciona e retira do final, o que facilita sua implementacao 
 */
@@ -29,7 +29,7 @@ PILHA *pilha_criar(){
 }
 
 int tam(PILHA *p){ return p->fim ; }
-bool pilha_vazia(PILHA *pilha){ return (pilha->fim == 0) ;}
+bool pilha_vazia(PILHA *pilha){ return (pilha->fim == -1) ;}
 bool pilha_cheia(PILHA *pilha){ return pilha->fim>=maxn ; }
 
 ITEM *pilha_topo(PILHA *p){ return p->itens[p->fim-1] ; }
