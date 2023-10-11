@@ -3,7 +3,7 @@
 #include<stdbool.h> 
 #include "pilha.h"
 
-// sequencial estatica 
+// sequencial estatica
 
 struct pilha_{
 	ITEM *item[maxn] ; 
