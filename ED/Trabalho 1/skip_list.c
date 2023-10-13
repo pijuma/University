@@ -32,7 +32,7 @@
 #include<stdlib.h> 
 #include<string.h> 
 #include<time.h> 
-#include "skip.h"
+#include "lista.h"
 
 // declaração da struct do no
 struct NO_{ 
@@ -110,6 +110,9 @@ ITEM *skip_busca_key(SKIP *skip, char *pal){
 }
 
 int get_nivel() {
+
+    return 0 ; 
+
     int res = 0;
 
     while(true) {
@@ -295,8 +298,6 @@ bool skip_remover(SKIP *skip, char *a){
                     if(!strcmp(item_get_key((at->prox)->item), a)){ // tenho q apagar meu prox
                         
                         achei = 1 ;
-                        
-                        
 
                         NO *mid = at->prox ;
                         at->prox = mid->prox ; 
@@ -305,7 +306,7 @@ bool skip_remover(SKIP *skip, char *a){
                         if (mid != NULL) {
                             item_apagar(&(mid->item));
                             free(mid) ;
-                            mid->prox = NULL ;
+                            mid = NULL ;
                         }
 
                         at = at->baixo ; 
@@ -345,11 +346,11 @@ bool skip_remover(SKIP *skip, char *a){
                     else at = at->prox ; 
 
                 } 
-            } else {
+
+            } 
+            else {
                 at = at->baixo;
             } 
-
-
             
 
         }
