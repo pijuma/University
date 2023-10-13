@@ -1,4 +1,4 @@
-#include "skip.h"
+#include "lista.h"
 #include<stdio.h>
 #include<stdlib.h> 
 #include<string.h> 
@@ -72,6 +72,7 @@ int main(){
 
     SKIP *lista = skip_criar();
 
+    //int n ; scanf("%d", &n) ; 
     char t[55];
 
     while(scanf(" %s", t) != EOF) {
