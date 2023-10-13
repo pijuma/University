@@ -111,8 +111,6 @@ ITEM *skip_busca_key(SKIP *skip, char *pal){
 
 int get_nivel() {
 
-    return 0 ; 
-
     int res = 0;
 
     while(true) {
@@ -303,7 +301,7 @@ bool skip_remover(SKIP *skip, char *a){
                         at->prox = mid->prox ; 
 
 
-                        if (mid != NULL) {
+                        if (mid != NULL && at->baixo == NULL) {
                             item_apagar(&(mid->item));
                             free(mid) ;
                             mid = NULL ;
@@ -329,10 +327,10 @@ bool skip_remover(SKIP *skip, char *a){
                     NO *mid = at->prox ; 
                     at -> prox = mid->prox ; 
 
-                    if (mid != NULL) {
+                    if (mid != NULL && at->baixo == NULL) {
                         item_apagar(&(mid->item));
                         free(mid) ;
-                        mid->prox = NULL ;
+                        mid = NULL ;
                     }
                     
                     
@@ -429,7 +427,6 @@ void liberar_nos_cabecas(NO **i){
     liberar_nos_cabecas(&((*i)->baixo));
 
     (*i)->baixo = NULL ;
-    item_apagar(&(*i)->item);
     free(*i); (*i) = NULL ; 
 
 }
