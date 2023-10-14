@@ -23,8 +23,7 @@
     Como extra, implementamos as funções (pois vimos utilidade para debugar/executar as outras):
     skip_vazia -> para checar se a lista tem elementos 
     get_nivel -> para gerar o nivel do nosso nó de forma randomica
-    imprime_skip -> para debugar, utilizada para checar se a lista foi montada corretamente 
-    skip_apagar -> para desalocar a memória utilizada 
+    skip_apagar e auxiliares -> para desalocar a memória utilizada 
 
 */
 
@@ -49,8 +48,9 @@ struct SKIP_L{
 } ;
 
 // checar se a skip list está vazia 
-bool skip_vazia(SKIP *skip){ return skip->tam == 0 ; }
+int skip_vazia(SKIP *skip){ return skip->tam == 0 ; }
 
+// função para criar a skip_list
 SKIP *skip_criar(){
 
     SKIP *skip = (SKIP *) malloc(sizeof(SKIP)) ;
@@ -60,6 +60,7 @@ SKIP *skip_criar(){
         
         skip->mx_lvl = 0 ; skip->tam = 0 ; skip->ini = NULL ; // inicializa o skip
 
+        // criamos o nó sentinela inicial -> nó cabeça do nivel 0 
         NO *sentinela = (NO *) malloc(sizeof(NO)) ;
         
         if(sentinela == NULL) exit(1) ; 
@@ -75,6 +76,7 @@ SKIP *skip_criar(){
 
 }
 
+// essa função retorna o item que contém a palavra pal como chave, caso exista 
 ITEM *skip_busca_key(SKIP *skip, char *pal){
     
     if(skip == NULL || skip_vazia(skip)) return NULL ; 
@@ -83,15 +85,13 @@ ITEM *skip_busca_key(SKIP *skip, char *pal){
 
     while(atual != NULL){
 
-        if(atual->item != NULL && !strcmp(pal, item_get_key(atual->item))) return atual->item ;
+        if(atual->item != NULL && !strcmp(pal, item_get_key(atual->item))) return atual->item ; // achei o item 
 
-        else if(atual->prox == NULL){
+        else if(atual->prox == NULL){ // não tenho um proximo -> devo descer
             atual = atual->baixo ; 
         }
 
         else{
-
-            if(atual->item != NULL && !strcmp(pal, item_get_key(atual->item))) return atual->item ;
 
             if(strcmp(item_get_key((atual->prox)->item), pal) > 0){//meu proximo é maior = devo descer
                 atual = atual -> baixo ; 
@@ -109,11 +109,14 @@ ITEM *skip_busca_key(SKIP *skip, char *pal){
 
 }
 
+// função para criar o nivel do meu nó de forma randomizada 
+// fizemos dessa forma para que a quantidade de níveis não fique crescendo de forma indefinida 
 int get_nivel() {
 
     int res = 0;
 
-    while(true) {
+    while(1) {
+        if(res > 20) break ; // colocamos um limite para a quantidade de niveis 
         int num = rand();
         if (num%2 == 0) res++;
         else break;
@@ -122,40 +125,18 @@ int get_nivel() {
     return res;
 }
 
-void imprime_skip(SKIP *skip){
+// funcao para inserir novos itens na lista  
+int skip_inserir(SKIP *skip, ITEM *item){
 
-    NO *cabeca = skip->ini ; 
-
-    while(cabeca != NULL){
-
-        for(NO *i = cabeca->prox ; i != NULL ; i = i->prox){
-            printf("%s ", item_get_key(i->item)) ; 
-            if(i->baixo != NULL){
-                printf("%s\n", item_get_key((i->baixo)->item)) ; 
-            }
-        }
-
-        printf("\n") ; 
-
-        cabeca = cabeca->baixo ; 
-
-    }
-
-}
-
-bool skip_inserir(SKIP *skip, ITEM *a){
-
-    if(skip == NULL || skip_busca_key(skip, item_get_key(a)) != NULL) return 0 ; 
+    // se o item ja existir ou a lista nao existir nao devemos inserir 
+    if(skip == NULL || skip_busca_key(skip, item_get_key(item)) != NULL) return 0 ; 
 
     skip->tam++ ; 
 
     int nivel = get_nivel();
 
-    //printf("%d\n", nivel) ;
-
+    // meu vertice inicial de busca -> o nó cabeça mais alto que tem na skip_list 
     NO *at = skip->ini ; 
-    // o anterior é para caso eu tenha add ja algum 
-    // e tenho que ligar de baixo com o meu atual agora
 
     if(at->lvl < nivel){ // tenho que criar novos nós cabeças 
 
@@ -176,19 +157,21 @@ bool skip_inserir(SKIP *skip, ITEM *a){
     }
 
     skip->mx_lvl = at->lvl ; skip->ini = at ; 
-    
+
+    // irá guardar o nó anterior que foi inserido do meu item -> posso precisar fazer conecções futuras
+    // mudando o "baixo" desse anterior     
     NO *ant = NULL ; 
 
     while(at != NULL){
 
-        if(at->prox == NULL){ // checa se o nivel dele é <= ao meu 
+        if(at->prox == NULL){ // não tenho proximo -> existe apenas o nó cabeça 
 
-            if(at->lvl <= nivel){
+            if(at->lvl <= nivel){ // adiciono ele se eu existir naquele nivel 
 
                 NO *agr = (NO *)malloc(sizeof(NO)) ; 
 
                 agr->lvl = at->lvl ; agr -> prox = NULL ; agr -> baixo = NULL ; 
-                agr -> item = a ;
+                agr -> item = item ;
                 at->prox = agr ; 
 
                 if(ant != NULL){// tenho que ligar o meu de cima com meu atual
@@ -205,28 +188,30 @@ bool skip_inserir(SKIP *skip, ITEM *a){
 
         else{
 
-            if(at->lvl > nivel) at = at->baixo ; //n devo add o meu ainda 
-
-            else if(strcmp(item_get_key((at->prox)->item), item_get_key(a)) > 0){//tenho que add meu agr e dps descer 
+            if(strcmp(item_get_key((at->prox)->item), item_get_key(item)) > 0){//tenho que descer e adicionar o meu, caso eu exista no nivel  
                 
-                NO *agr = (NO *)malloc(sizeof(NO)) ;
+                if(at->lvl <= nivel){ // preciso adicionar meu novo nó 
 
-                agr->lvl = at->lvl ; agr->prox = NULL ; agr->baixo = NULL ; 
-                agr->item = a ;
+                    NO *agr = (NO *)malloc(sizeof(NO)) ;
 
-                if(ant != NULL){
-                    ant->baixo = agr ; 
+                    agr->lvl = at->lvl ; agr->prox = NULL ; agr->baixo = NULL ; 
+                    agr->item = item ;
+
+                    if(ant != NULL){
+                        ant->baixo = agr ; 
+                    }
+
+                    agr->prox = at->prox ; 
+                    at->prox = agr ; 
+                    ant = agr ; 
+
                 }
 
-                agr->prox = at->prox ; 
-                at->prox = agr ; 
-                at = at->baixo ;
-
-                ant = agr ;  
+                at = at->baixo ; 
 
             }
 
-            else{ // senao continuo indo pra direita 
+            else{ // senao continuo indo pra direita procurando o primeiro cara que o proximo dele eh maior que o meu para eu descer 
                 at = at->prox ; 
             }
 
@@ -238,29 +223,29 @@ bool skip_inserir(SKIP *skip, ITEM *a){
 
 }
 
-bool skip_alterar(SKIP *skip, ITEM *a){
+// função para alterar o significado de uma palavra 
+int skip_alterar(SKIP *skip, ITEM *novo_item){
 
-    if(skip == NULL || skip_vazia(skip) || !skip_busca_key(skip, item_get_key(a))) {
-        item_apagar(&a); return false;
+    // se o item ou a skip nao existirem - não devo fazer nada - apenas retornar que deu erro 
+    if(skip == NULL || skip_vazia(skip) || !skip_busca_key(skip, item_get_key(novo_item))) {
+        return 0;
     }
 
+    // ponteiro para o vertice atual - utilizado para percorrer a lista
     NO *at = skip->ini ; 
-
-    int mudei = 0 ; 
 
     while(at != NULL){
 
-        if(at->item != NULL && !strcmp(item_get_key(a), item_get_key(at->item))){// achei = tenho q alterar e descer nele 
-            mudei = 1 ;  
-            item_set_verb(at->item, item_get_verb(a)) ;
-            at = at->baixo ; 
+        if(at->item != NULL && !strcmp(item_get_key(novo_item), item_get_key(at->item))){// achei = tenho q alterar e descer nele 
+            item_set_verb(at->item, item_get_verb(novo_item)) ;
+            return 1 ; 
         }
 
         else{
 
-            if(at->prox == NULL) at = at->baixo ; 
+            if(at->prox == NULL) at = at->baixo ; // nao tenho como ir pro prox 
             else{
-                if(strcmp(item_get_key((at->prox)->item), item_get_key(a))>0) at = at->baixo ; 
+                if(strcmp(item_get_key((at->prox)->item), item_get_key(novo_item))>0) at = at->baixo ; // se meu proximo eh maior que o que eu procuro -> nao preciso ir para a direita (estrutura ordenada)
                 else at = at->prox ;  
             }
 
@@ -268,15 +253,14 @@ bool skip_alterar(SKIP *skip, ITEM *a){
 
     }
 
-    item_apagar(&a);
-
-    return mudei ; 
+    return 0 ; 
 
 }
 
-bool skip_remover(SKIP *skip, char *a){
+// função para remover uma palavra do meu dicionario 
+int skip_remover(SKIP *skip, char *pal_del){
 
-    if(skip == NULL || skip_vazia(skip) || !skip_busca_key(skip, a)) return 0 ; 
+    if(skip == NULL || skip_vazia(skip) || !skip_busca_key(skip, pal_del)) return 0 ; 
 
     NO *at = skip->ini ;
     int achei = 0 ; 
@@ -289,22 +273,24 @@ bool skip_remover(SKIP *skip, char *a){
 
             else{
 
-                if(strcmp(item_get_key((at->prox)->item), a) > 0) at = at->baixo ; // n tem ngm meu naql nivel
+                // se meu proximo é maior do que o que eu quero -> devo descer -> todos os proximos no nivel que estou tambem serão maiores que o meu 
+                if(strcmp(item_get_key((at->prox)->item), pal_del) > 0) at = at->baixo ; 
                 
                 else{ // tenho que apagar meu proximo? 
 
-                    if(!strcmp(item_get_key((at->prox)->item), a)){ // tenho q apagar meu prox
+                    // fizemos procurando se o próximo é quem eu busco pois facilita a deleção 
+                    if(!strcmp(item_get_key((at->prox)->item), pal_del)){ // tenho que apagar o meu proximo -> ele é o cara que eu procuro 
                         
                         achei = 1 ;
 
-                        NO *mid = at->prox ;
-                        at->prox = mid->prox ; 
+                        // mudando os ponteiros para retirar o item que eu quero deletar
+                        NO *no_del = at->prox ; 
+                        at->prox = no_del->prox ; 
 
-
-                        if (mid != NULL && at->baixo == NULL) {
-                            item_apagar(&(mid->item));
-                            free(mid) ;
-                            mid = NULL ;
+                        if (no_del != NULL && at->baixo == NULL) {
+                            item_apagar(&(no_del->item));
+                            free(no_del) ;
+                            no_del = NULL ;
                         }
 
                         at = at->baixo ; 
@@ -319,64 +305,63 @@ bool skip_remover(SKIP *skip, char *a){
         }
 
         else{
+
             if (at->prox != NULL) {
-                    if(!strcmp(item_get_key((at->prox)->item), a)){ // tenho que apagar 
+                    
+                if(!strcmp(item_get_key((at->prox)->item), pal_del)){ // tenho que apagar 
                     
                     achei = 1 ; // apaguei algum cara 
 
-                    NO *mid = at->prox ; 
-                    at -> prox = mid->prox ; 
+                    // mudando os ponteiros 
+                    NO *no_del = at->prox ; 
+                    at -> prox = no_del->prox ; 
 
-                    if (mid != NULL && at->baixo == NULL) {
-                        item_apagar(&(mid->item));
-                        free(mid) ;
-                        mid = NULL ;
+                    if (no_del != NULL && at->baixo == NULL) {
+                        item_apagar(&(no_del->item));
+                        free(no_del) ;
+                        no_del = NULL ;
                     }
                     
-                    
                     at = at->baixo ;
-
                 }
 
                 else{
 
-                    if(strcmp(item_get_key((at->prox)->item), a) > 0) at = at->baixo ; 
+                    // minha proxima é maior do que a palavra que eu procuro 
+                    if(strcmp(item_get_key((at->prox)->item), pal_del) > 0) at = at->baixo ; 
                     else at = at->prox ; 
 
                 } 
 
             } 
-            else {
-                at = at->baixo;
-            } 
-            
+
+            // se meu prox eh nulo so tenho a opção de descer no meu no 
+            else at = at->baixo;          
 
         }
 
     }
 
+    // retorna se a operação de deleção foi bem sucedida = achamos o item para deletar 
     return achei ; 
 
 }
 
-// imprime todas as palavras que começam com a letra "a" - em ord alfabética
-bool skip_imprime_char(SKIP *skip, char a){
+// imprime todas as palavras que começam com a letra car - em ord alfabética
+int skip_imprime_char(SKIP *skip, char car){
 
     NO *at = skip->ini ; 
 
     while(at!=NULL){
-
-        // quero ver o prox - se o prox n vai me satisfazer mais eu desço no meu 
 
         if(at->prox == NULL) at = at->baixo ; // tenho que descer 
 
         else{
 
             // to no array completo e achei onde começa oq quero imprimir 
+            if(at->baixo == NULL && at->prox != NULL && car == item_get_key((at->prox)->item)[0]){ // achei e to no nó cabeça
 
-            if(at->baixo == NULL && at->prox != NULL && a == item_get_key((at->prox)->item)[0]){ // achei e to em cabeça
-
-                for(NO *i = at->prox ; i != NULL && a == item_get_key((i)->item)[0] ; i = i->prox){
+                for(NO *i = at->prox ; i != NULL && car == item_get_key((i)->item)[0] ; i = i->prox){
                     printf("%s %s\n", item_get_key(i->item), item_get_verb(i->item)) ; 
                 }
 
@@ -394,13 +379,10 @@ bool skip_imprime_char(SKIP *skip, char a){
             
             }
 
-            else if(a -'a' <= (item_get_key((at->prox)->item))[0]-'a'){ // tenho que descer no meu atual 
-                at = at->baixo ; 
-            }
+            // tenho que descer no meu atual porque meu proximo tem caracter maior do que o que eu procuro 
+            else if(car -'a' <= (item_get_key((at->prox)->item))[0]-'a') at = at->baixo ; 
 
-            else{
-                at = at->prox ; 
-            }
+            else at = at->prox ; 
 
         }
 
@@ -410,27 +392,31 @@ bool skip_imprime_char(SKIP *skip, char a){
 
 }
 
-void liberar_no_lista(NO **i){
+// funcao pra liberar a memória alocada para os nós da lista 
+void liberar_no_lista(NO **no){
 
-    if((*i) == NULL) return ; 
+    if((*no) == NULL) return ; 
     
-    liberar_no_lista(&((*i)->prox));
+    liberar_no_lista(&((*no)->prox));
 
-    (*i)->prox = NULL ;
-    free(*i); i = NULL ; 
+    (*no)->prox = NULL ;
+    free(*no); no = NULL ; 
 }
 
-void liberar_nos_cabecas(NO **i){
+// função para liberar a memória alocada para os nós cabeças
+void liberar_nos_cabecas(NO **no){
     
-    if((*i) == NULL) return ; 
+    if((*no) == NULL) return ; 
 
-    liberar_nos_cabecas(&((*i)->baixo));
+    liberar_nos_cabecas(&((*no)->baixo));
 
-    (*i)->baixo = NULL ;
-    free(*i); (*i) = NULL ; 
+    (*no)->baixo = NULL ;
+    free(*no); (*no) = NULL ; 
 
 }
 
+// função para liberar os itens alocados e também chamar as funções 
+// para liberar os nós da skip_list - evitando vazamento de memória
 void skip_apagar(SKIP **skip){
 
     for(NO *i = (*skip)->ini ; i != NULL ; i = i->baixo) {
