@@ -19,7 +19,6 @@ void make_insertion(SKIP *skip){
         printf("OPERACAO INVALIDA\n") ; 
     }
         
-
 }
 
 void alterar(SKIP *skip){
@@ -33,6 +32,8 @@ void alterar(SKIP *skip){
     if(!skip_alterar(skip, at)) {
         printf("OPERACAO INVALIDA\n") ; 
     }
+
+    item_apagar(&at) ;
 
 }
 
@@ -76,7 +77,7 @@ int main(){
 
     char t[55];
 
-    while(scanf(" %s", t) != EOF) { 
+    while(scanf(" %s", t) != EOF) {
         if(!strcmp(t, "insercao")) make_insertion(lista) ; 
         else if(!strcmp(t, "alteracao")) alterar(lista) ; 
         else if(!strcmp(t, "remocao")) remover(lista) ;
