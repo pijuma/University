@@ -3,8 +3,12 @@
 #include<string.h> 
 #include "item.h"
 
+// TAD Item 
+// a principal alteração feita foi em relação a struct que agora guarda
+// a palavra e o significado dela 
+
 struct item_{ 
-    char key[55], verb[145] ;
+    char key[52], verb[142] ;
 };
 
 ITEM *item_criar (char pal[], char sig[]){
@@ -20,15 +24,15 @@ ITEM *item_criar (char pal[], char sig[]){
 
 }
 
-bool item_apagar(ITEM **item){
+int item_apagar(ITEM **item){
     
     if(*item != NULL){ 
         free(*item) ;
         *item = NULL ;
-        return true ; 
+        return 1 ; 
     }
     
-    return false ; 
+    return 0 ; 
 
 }
 
@@ -46,14 +50,14 @@ char *item_get_verb(ITEM *item){ // retorna o significado
     exit(1) ; // cuidado para nao dar BO  
 }
 
-bool item_set_verb(ITEM *item, char *sig){
+int item_set_verb(ITEM *item, char *sig){
 
     if(item != NULL){
         strcpy(item->verb, sig); 
-        return true ; 
+        return 1 ; 
     }
 
-    return false ; 
+    return 0 ; 
 
 }
 
