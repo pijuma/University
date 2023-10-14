@@ -4,13 +4,15 @@
 #include<string.h> 
 #include<time.h> 
 
+// na main chamamos as funções do TAD da skip_list -> seguindo os padrões requisitados
+
 void make_insertion(SKIP *skip){
 
-    char a[55], b[145] ;
-    scanf(" %s", a) ; 
-    scanf(" %[^\n]s", b) ;
+    char pal[52], sig[142] ;
+    scanf(" %s", pal) ; 
+    scanf(" %[^\n]s", sig) ;
 
-    ITEM *at = item_criar(a, b) ; 
+    ITEM *at = item_criar(pal, sig) ; 
     
     if(!skip_inserir(skip, at)) {
         item_apagar(&at);
@@ -22,11 +24,11 @@ void make_insertion(SKIP *skip){
 
 void alterar(SKIP *skip){
     
-    char a[55], b[145] ;
-    scanf(" %s", a) ; 
-    scanf(" %[^\n]s", b) ;
+    char pal[52], sig[142] ;
+    scanf(" %s", pal) ; 
+    scanf(" %[^\n]s", sig) ;
 
-    ITEM *at = item_criar(a, b) ; 
+    ITEM *at = item_criar(pal, sig) ; 
 
     if(!skip_alterar(skip, at)) {
         printf("OPERACAO INVALIDA\n") ; 
@@ -36,35 +38,35 @@ void alterar(SKIP *skip){
 
 void remover(SKIP *skip){
 
-    char a[55];
-    scanf(" %s", a) ;
+    char pal[52];
+    scanf(" %s", pal) ;
 
-    if(!skip_remover(skip, a))
+    if(!skip_remover(skip, pal))
         printf("OPERACAO INVALIDA\n") ; 
 
 }
 
 void buscar(SKIP *skip){
 
-    char a[55]; 
-    scanf(" %s", a) ; 
+    char pal[52]; 
+    scanf(" %s", pal) ; 
 
-    ITEM *at = skip_busca_key(skip, a) ;
+    ITEM *at = skip_busca_key(skip, pal) ;
 
     if (at == NULL) {
         printf("OPERACAO INVALIDA\n") ; return ;
     }
 
-    printf("%s %s\n", a, item_get_verb(at)) ;
+    printf("%s %s\n", pal, item_get_verb(at)) ;
 
 }
 
 void impressao(SKIP *skip){
 
-    char a ; scanf(" %c", &a) ; 
+    char car ; scanf(" %c", &car) ; 
 
-    if(!skip_imprime_char(skip, a)) 
-        printf("NAO HA PALAVRAS INICIADAS POR %c\n", a) ; 
+    if(!skip_imprime_char(skip, car)) 
+        printf("NAO HA PALAVRAS INICIADAS POR %c\n", car) ; 
 
 }
 
@@ -72,10 +74,9 @@ int main(){
 
     SKIP *lista = skip_criar();
 
-    //int n ; scanf("%d", &n) ; 
     char t[55];
 
-    while(scanf(" %s", t) != EOF) {
+    while(scanf(" %s", t) != EOF) { 
         if(!strcmp(t, "insercao")) make_insertion(lista) ; 
         else if(!strcmp(t, "alteracao")) alterar(lista) ; 
         else if(!strcmp(t, "remocao")) remover(lista) ;
