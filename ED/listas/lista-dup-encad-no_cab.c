@@ -1,5 +1,5 @@
 /*
-lista duplamente encadeada com nó cabeça 
+lista duplamente encadeada com no cabeça 
 */
 
 #include<stdio.h>
@@ -26,7 +26,7 @@ LISTA *lista_criar(){
 	if(l != NULL){
 		NO *c = (NO *) malloc(sizeof(NO)) ;
 		c->x = NULL ; c->prox = c->ant = NULL ; 
-		l->cab = c ; l->fim = NULL ;   
+		l->cab = c ; l->fim = c ;   
 		l->tam = 0 ; 
 	}
 
@@ -60,15 +60,8 @@ int lista_inserir_fim(LISTA *l, ITEM *x){
 	NO *novo = (NO *) malloc(sizeof(NO)) ; 
 	novo -> x = x ; novo->prox = novo->ant = NULL ; 
 
-	if(l->fim != NULL){
-		novo->ant = l->fim ;
-		l->fim->prox = novo ; 
-	}
-
-	else{
-		novo->ant = l->cab ; 
-		l->cab->prox = novo ; 
-	}
+	novo->ant = l->fim ;
+	l->fim->prox = novo ; 
 
 	l->fim = novo ; 
 	l->tam++ ; 
@@ -145,10 +138,7 @@ ITEM *lista_remover(LISTA *l, ITEM *x){ // desloca todos pra esq dps de remover
 
 	if(at == NULL) return NULL ; 
 	// vou mudar o final 
-	if(at->prox == NULL){
-		if(at->ant == l->cab) l->fim = NULL ; // ficou vazia 
-		else l->fim = at->ant ;
-	} 
+	if(at->prox == NULL) l->fim = at->ant ;
 
 	at->ant->prox = at->prox ; 
 	if(at->prox != NULL) at->prox->ant = at-> ant ; 
@@ -162,12 +152,12 @@ ITEM *lista_remover(LISTA *l, ITEM *x){ // desloca todos pra esq dps de remover
 }
 
 // limpando aproveitando a função remover 
-int lista_apagar(LISTA **l){
-	if(*l == NULL) return 0 ; 
-	while((*l)->cab != NULL) lista_remover((*l), ((*l)->cab)->x) ; 
-	free(*l) ; *l = NULL ; 
-	return 1 ; 
-}
+// int lista_apagar(LISTA **l){
+// 	if(*l == NULL) return 0 ; 
+// 	while((*l)->cab != NULL) lista_remover((*l), ((*l)->cab)->x) ; 
+// 	free(*l) ; *l = NULL ; 
+// 	return 1 ; 
+// }
 
 // limpando sem a função remover 
 void apaga(NO *no){
