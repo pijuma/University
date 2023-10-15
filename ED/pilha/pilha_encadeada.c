@@ -41,7 +41,6 @@ ITEM *pop(PILHA *p){
     NO *resp = p->topo ; 
     ITEM *ans = resp->x ; 
     p->topo = resp->ant ; 
-    resp->ant = NULL ; 
     free(resp) ; resp = NULL ; 
     p->tam-- ; 
     return ans ; 
