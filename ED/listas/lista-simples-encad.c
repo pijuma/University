@@ -82,9 +82,20 @@ ITEM *lista_buscar(LISTA *l, int chave){
 
 }
 
+ITEM *buscar(NO *at, int chave){
+	if(at == NULL) return NULL ; 
+	if(item_get_chave(at->x) == chave) return at->x ; 
+	return buscar(at->prox, chave) ; 
+}
+
+ITEM *busca(LISTA *l, int chave){
+	if(l == NULL) return NULL ; 
+	return buscar(l->ini, chave) ; 
+}
+
 ITEM *lista_remover(LISTA *l, ITEM *x){ // desloca todos pra esq dps de remover 
 
-	if(l == NULL || lista_buscar(l, item_get_chave(x)) == NULL) return NULL ; 
+	if(l == NULL || busca(l, item_get_chave(x)) == NULL) return NULL ; 
 
 	NO *ant = NULL, *at = l->ini ;
 
@@ -101,7 +112,7 @@ ITEM *lista_remover(LISTA *l, ITEM *x){ // desloca todos pra esq dps de remover
 
 			if(at->prox == NULL) l->fim = ant ; 
 
-			printf("achei um cara\n") ; 
+			//printf("achei um cara\n") ; 
 
 			ITEM *item = at->x ;  
 			item_apagar(&(at->x)) ;
