@@ -223,6 +223,7 @@ int skip_inserir(SKIP *skip, ITEM *item){
 
 }
 
+// pietra e bruno 
 // função para alterar o significado de uma palavra 
 int skip_alterar(SKIP *skip, ITEM *novo_item){
 
@@ -403,6 +404,7 @@ void liberar_no_lista(NO **no){
     free(*no); no = NULL ; 
 }
 
+// pietra e bruno 
 // função para liberar a memória alocada para os nós cabeças
 void liberar_nos_cabecas(NO **no){
     
