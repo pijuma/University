@@ -104,15 +104,12 @@ ITEM *lista_remover(LISTA *l, ITEM *x){ // desloca todos pra esq dps de remover
 		if(item_get_chave(at->x) == item_get_chave(x)){ // apagar o kra 
 
 			if(ant  == NULL){// tirando do 1o 
-				if(at->prox!=NULL) l->ini = at->prox ;
-				else l->ini = NULL ; 
+				l->ini = at->prox ;
 			} 
 			
 			else ant->prox = at->prox ; 
 
 			if(at->prox == NULL) l->fim = ant ; 
-
-			//printf("achei um cara\n") ; 
 
 			ITEM *item = at->x ;  
 			item_apagar(&(at->x)) ;
