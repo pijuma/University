@@ -258,6 +258,7 @@ int skip_alterar(SKIP *skip, ITEM *novo_item){
 
 }
 
+// implementado por pietra e bruno 
 // função para remover uma palavra do meu dicionario 
 int skip_remover(SKIP *skip, char *pal_del){
 
