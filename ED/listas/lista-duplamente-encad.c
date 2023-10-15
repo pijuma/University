@@ -161,8 +161,6 @@ ITEM *lista_remover(LISTA *l, ITEM *x){ // desloca todos pra esq dps de remover
 	ITEM *itemm = at->x ; 
 
 	at->ant = NULL ; at->prox = NULL ; 
-
-	item_apagar(&(at->x)) ; 
 	free(at) ; at = NULL ; 
 	l->tam-- ; 
 
