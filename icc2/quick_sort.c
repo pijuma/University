@@ -16,7 +16,7 @@ void quick_sort(int l, int r, int *v){
 
     // l eh o 1o kra maior que pivot a esquerda 
     // r eh o 1o kra menor que o pivot a direita 
-    
+    //partição 
     while(l <= r){
         while(v[l] < pivot) l++ ;
         while(v[r] > pivot) r-- ; 
