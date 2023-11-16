@@ -13,7 +13,7 @@ void shell(int *v, int n){
 
         h = (h-1)/3 ;
 
-        for(int i = 0 ; i < n ; i++){
+        for(int i = h ; i < n ; i++){
             int aux = v[i], j = i ; 
             while(j - h >= 0 && aux < v[j-h]){
                 v[j] = v[j-h] ;
