@@ -1,31 +1,22 @@
-// fazer o insertion_sort enquanto le os valores 
 #include<stdio.h>
-#include<stdlib.h>
 #include<stdbool.h>
 
 int main(){
 
-    int t; scanf("%d", &t) ; 
+    int n ; scanf("%d", &n) ; 
 
-    int a; scanf("%d", &a) ; 
+    int v[n+2] ;
 
-    int *v ; v = (int *) malloc(sizeof(int *) * t) ; 
-
-    v[0] = a ; 
-
-    printf("-1\n") ; 
-
-    for(int i = 1 ; i < t ; i++){
-        int at ; scanf("%d", &at); 
-        int j = i-1 ; 
-        while(j >= 0 && at < v[j]){
-            v[j+1] = v[j] ; j-- ; 
+    for(int i = 0 ; i < n ; i++){
+        int a ; scanf("%d", &a) ;
+        int j = i-1 ; // posição que irei inserir é j + 1 inicialmente 
+        while(j >= 0 && v[j] > a){
+            v[j+1] = v[j] ; j-- ; //desloco tudo - abrir espaço 
         }
-        v[j+1] = at ;   
-        if(i-2 >= 0){
-            printf("%d %d %d\n", v[i], v[i-1], v[i-2]) ; 
-        }
-        else printf("-1\n") ; 
+        v[j+1] = a ;
     }
 
-} 
+    for(int i = 0 ; i < n ; i++) printf("%d ", v[i]) ;
+    printf("\n") ; 
+
+}
