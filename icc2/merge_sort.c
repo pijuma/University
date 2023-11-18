@@ -48,3 +48,50 @@ int main(){
     arr1 = NULL ; 
 
 }
+
+#include<stdio.h>
+#include<stdlib.h>
+
+void merge(int t, int *v){
+
+    if(t == 1) return ; 
+    
+    int mid = (t)>>1 ; 
+    int tame = mid, tamd = (t-mid) ; 
+
+    int ve[tame+2], vd[tamd+2] ; 
+    
+    for(int i = 1 ; i <= mid ; i++) ve[i] = v[i] ;
+    for(int i = mid + 1 ; i <= t ; i++) vd[i-mid] = v[i] ;
+
+    merge(tame, ve) ; merge(tamd, vd) ; 
+
+    int pte = 1, ptd = 1 ; 
+
+    for(int i = 1 ; i <= t ; i++){
+        if(ptd > tamd){
+            v[i] = ve[pte++] ;
+        }
+        else if(pte > tame) v[i] = vd[ptd++] ;
+        else{
+            if(ve[pte] >= vd[ptd]) v[i] = vd[ptd++] ;
+            else v[i] = ve[pte++] ;
+        }
+    }
+
+}
+
+int main(){
+
+    int n ; scanf("%d", &n) ; 
+    
+    int v[n+3] ;
+
+    for(int i = 1 ; i <= n ; i++) scanf("%d", &v[i]) ;
+
+    merge(n, v) ; 
+
+    for(int i =1  ; i <= n ; i++) printf("%d ", v[i]) ;
+    printf("\n") ;
+
+}
