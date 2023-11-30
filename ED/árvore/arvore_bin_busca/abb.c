@@ -109,6 +109,61 @@ void troca_max_esq(NO *remocao, NO *troca, NO *ant_troca){
 
 }
 
+void troca_esq_mx(NO *troca, NO *remocao, NO *ant){
+
+    while(troca->dir != NULL){
+        ant = troca ; 
+        troca = troca->dir ;
+    } 
+
+    if(ant == troca) ant -> esq = troca ->esq ;  
+    else ant -> dir = troca -> esq ; 
+
+    remocao -> item = troca->item ;
+    free(troca) ; troca = NULL ; 
+    
+}
+
+// remocao iterativa 
+bool ab_rem(abb *T, int chave){
+
+    if(T == NULL) return 0 ; 
+
+    NO **at = &(T->raiz) ;
+
+    while((*at) != NULL){
+
+        if(item_get_chave((*at)->item) == chave){
+
+            if((*at)->esq == NULL || (*at)->dir == NULL){
+
+                NO *rem = *at ; 
+
+                if((*at)->esq == NULL){
+                    (*at) = (*at)->dir ; 
+                }
+
+                else (*at) = (*at)->esq ; 
+
+                    return 1 ; 
+
+            }
+
+            else troca_esq_mx((*at)->esq, (*at), (*at)) ;
+
+        }
+
+        else{
+            // vai p dir 
+            if(item_get_chave((*at)->item) < chave) at = &((*at)->dir) ; 
+            else at = &((*at)->esq) ; 
+        }
+
+    }
+
+    return 0 ;
+
+}
 
 bool ab_remover_no(NO **at, int chave){
 
