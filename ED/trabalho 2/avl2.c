@@ -77,7 +77,7 @@ NO *troca_max_esq(NO *rem, NO *troca, NO *ant){
 		troca = troca -> dir ; 
 	}
 
-	if(rem == troca) ant->esq = troca->esq ;  
+	if(rem == ant) ant->esq = troca->esq ;  
 	else ant->dir = troca->esq ; 
 
 	item_set_chave(rem->item, item_get_chave(troca->item)) ; 
@@ -161,7 +161,7 @@ NO *avl_inserir_no(NO *node, NO *novo){
 	else if(item_get_chave(node->item) > item_get_chave(novo->item)) node->esq = avl_inserir_no(node->esq, novo) ;
 
 	node -> altura = max(get_altura(node->esq), get_altura(node->dir)) + 1 ; 
-	
+
 	// REBALANCEAR! 
 
 	// rotação direita ou rotação esquerda/direita
