@@ -284,7 +284,7 @@ void avl_percurso_comum(AVL **final, AVL *maior, NO *node){
 	avl_percurso_comum(final, maior, node->esq) ; avl_percurso_comum(final, maior, node->dir) ; 
 
 }
-
+//pietra e bruno 
 AVL *avl_comum(AVL **final, AVL *maior, AVL *menor){
 
 	avl_percurso_comum(final, maior, menor->raiz) ;
@@ -292,7 +292,7 @@ AVL *avl_comum(AVL **final, AVL *maior, AVL *menor){
 }
 
 /*funções para desalocar memória*/
-// função para apagar os nós recursivamente 
+// função para apagar os nós recursivamente - pietra e bruno 
 void apagar_avl_no(NO **node){
 	
 	if(*node == NULL) return ; 
