@@ -66,7 +66,7 @@ SET *set_uniao(SET *A, SET *B){
 	avl_adicionar_elementos(&(uniao->T), A->T) ;
 	avl_adicionar_elementos(&(uniao->T), B->T) ;
 
-	return uniao ; 
+	return uniao ; //pietra e bruno 
 }
 SET *set_interseccao(SET *A, SET *B){
 
