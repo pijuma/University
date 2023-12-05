@@ -187,6 +187,8 @@ NO *avl_inserir_no(NO *node, NO *novo, int *inseriu){
 		else node = rodar_esq(node) ; 
 	}
 
+    node -> altura = max(get_altura(node->esq), get_altura(node->dir)) + 1 ; 
+
 	return node ; 
 
 }
