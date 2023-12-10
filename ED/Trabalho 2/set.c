@@ -16,14 +16,20 @@ SET *set_criar(void){
 
 }
 
+// função que checa se um elemento pertence ao set 
+// O(log(n)) - mesma complexidade da busca da avl 
+
 bool set_pertence(SET *A, int elemento){
 	if(A == NULL) return 0 ;
 	return avl_buscar(A->T, elemento) ;
 }
 
+// insere um novo elemento no set - caso já não exista
 bool set_inserir (SET *s, int elemento){
 	
 	if(s == NULL) return 0 ; 
+
+	if(set_pertence(s, elemento)) return 0 ;
 
 	ITEM *item = item_criar(elemento) ; 
 
@@ -33,9 +39,12 @@ bool set_inserir (SET *s, int elemento){
 
 }
 
+// remove um elemento do set, caso ele exista
 bool set_remover(SET *s, int elemento){
 	
 	if(s == NULL) return 0 ; 
+
+	if(!set_pertence(s, elemento)) return 0 ;
 
 	return avl_remover(s->T, elemento) ;
 
@@ -51,6 +60,10 @@ void set_apagar(SET **s){
 
 }
 
+// imprime os elementos do set
+// a impressão é feita pelo percurso em-ordem 
+// que retorna os elementos da avl (armazenada no set) 
+// em ordem crescente 
 void set_imprimir(SET *s){
 	
 	if(s == NULL) return ; 
@@ -59,6 +72,11 @@ void set_imprimir(SET *s){
 
 }
 
+// retorna um set que é a união de todos os elementos contidos
+// nos sets A e B dados 
+// adicionamos cada elemento no set final, indo elemento por elemento 
+// portanto a complexidade será na ordem de O(n+m)
+// sendo n o tamanho do Set A e m o tamanho do Set B 
 SET *set_uniao(SET *A, SET *B){
 
 	SET *uniao = set_criar() ; 
@@ -68,6 +86,11 @@ SET *set_uniao(SET *A, SET *B){
 
 	return uniao ; 
 }
+
+// retorna um set que contem os elementos comuns dos sets A e B 
+// fica O(menor*log(maior))
+// isso pois percorremos a menor avl checando se o 
+// elemento está contido também na maior avl
 SET *set_interseccao(SET *A, SET *B){
 
 	SET *comum = set_criar() ;
