@@ -77,6 +77,8 @@ NO *rodar_dir_esq(NO *A){
 	return rodar_esq(A) ; 
 }
 
+// troca o valor do nó que será removido com o maior valor da sub esquerda dele 
+
 NO *troca_max_esq(NO *rem, NO *troca, NO *ant){
 
 	while(troca->dir != NULL){
@@ -94,6 +96,8 @@ NO *troca_max_esq(NO *rem, NO *troca, NO *ant){
 	return rem ; 
 
 }
+
+/* funções bases da avl*/
 
 AVL *avl_criar(){
 
@@ -114,7 +118,6 @@ NO *avl_remover_no(NO **node, int chave){
 	if(item_get_chave((*node)->item) == chave){
 		
 		// no max 1 filho 
-
 		if((*node)->esq == NULL || (*node)->dir == NULL){
 			
 			NO *removed = (*node) ;
@@ -122,6 +125,7 @@ NO *avl_remover_no(NO **node, int chave){
 			if((*node)->dir == NULL) (*node) = (*node)->esq ; 
 			else (*node) = (*node)->dir ; 
 
+			item_apagar(&(removed)->item) ; 
 			free(removed) ; removed = NULL ;  
 		}
 
@@ -129,6 +133,7 @@ NO *avl_remover_no(NO **node, int chave){
 
 	}
 
+	//buscando o nó a ser removido 
 	else if(item_get_chave((*node)->item) < chave) (*node)->dir = avl_remover_no(&(*node)->dir, chave) ; 
 
 	else if(item_get_chave((*node)->item) > chave) (*node)->esq = avl_remover_no(&(*node)->esq, chave) ; 
@@ -137,6 +142,7 @@ NO *avl_remover_no(NO **node, int chave){
 
 	(*node)->altura = max(get_altura((*node)->esq), get_altura((*node)->dir)) + 1 ; 
 
+	// checagem para verificar se a árvore continua balanceada 
 	if(fb(*node) == 2){
 		if(fb((*node)->esq) < 0) (*node) = rodar_esq_dir((*node)) ; 
 		else (*node) = rodar_dir((*node)) ; 
@@ -164,17 +170,18 @@ bool avl_remover(AVL *T, int chave){
 
 NO *avl_inserir_no(NO *node, NO *novo, int *inseriu){
 
+	// achou uma folha = deve inserir no local 
 	if(node == NULL) {
 		node = novo ;
 		*inseriu = 1 ; 
 	}
-
+	// busca o local certo para inserção
 	else if(item_get_chave(node->item) < item_get_chave(novo->item)) node->dir = avl_inserir_no(node->dir, novo, inseriu) ;
 	else if(item_get_chave(node->item) > item_get_chave(novo->item)) node->esq = avl_inserir_no(node->esq, novo, inseriu) ;
 
 	node -> altura = max(get_altura(node->esq), get_altura(node->dir)) + 1 ; 
 
-	// REBALANCEAR! 
+	// REBALANCEAR! (caso precise)
 
 	// rotação direita ou rotação esquerda/direita
 	if(fb(node) == 2){
@@ -199,6 +206,12 @@ bool avl_inserir(AVL *T, ITEM *item){
 
 	NO *novo = no_criar(item) ; 
 
+	/*
+	Nessa função checamos se o nó foi realmente inserido para evitar
+	memory leak, assim caso ele não tenha sido inserido (elemento repetido por ex)
+	nós apagamos o nó que foi criado
+	*/
+
 	if(novo != NULL){
 		int deu_bom = 0 ; 
 		T->raiz = avl_inserir_no(T->raiz, novo, &deu_bom) ; 
@@ -211,6 +224,7 @@ bool avl_inserir(AVL *T, ITEM *item){
 
 } 
 
+// busca pelo nó que guarda a chave - O(log(n))
 bool buscar_avl_no(NO *node, int chave){
 	
 	if(node == NULL) return 0 ; 
@@ -227,8 +241,7 @@ bool avl_buscar(AVL *T, int chave){
 	return buscar_avl_no(T->raiz, chave) ; 
 } 
 
-// imprime o percurso em-ordem 
-
+// imprime o percurso em-ordem - O(N)
 void dfs(NO *node){
 	
 	if(node == NULL) return ; 
@@ -244,8 +257,8 @@ void avl_dfs(AVL *T){
 	dfs(T->raiz) ; 
 }
 
-// percurso em pré-ordem reduz a qtd de rotações? 
-
+// insere os elementos da árvore que contém node numa árvore copia
+// utilizada na função set_união - O(n) 
 void adicionar_elementos(AVL **copia, NO *node){
 	
 	if(node == NULL) return ; 
@@ -253,10 +266,6 @@ void adicionar_elementos(AVL **copia, NO *node){
 	ITEM *neww = item_criar(item_get_chave(node->item)) ; 
 
 	bool ok = avl_inserir(*copia, neww) ;
-
-	if(ok){
-		printf("adicionei %d\n", item_get_chave(neww)) ; 
-	}
 
 	adicionar_elementos(copia, node->esq) ; adicionar_elementos(copia, node->dir) ; 
 
@@ -294,6 +303,7 @@ AVL *avl_comum(AVL **final, AVL *maior, AVL *menor){
 }
 
 /*funções para desalocar memória*/
+
 // função para apagar os nós recursivamente 
 void apagar_avl_no(NO **node){
 	
