@@ -10,7 +10,6 @@
 
     int item_get_chave(ITEM *item) ;
 
-
     bool item_set_chave(ITEM *item, int chave) ;
 
     void item_imprimir(ITEM *item) ;
