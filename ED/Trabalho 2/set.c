@@ -75,8 +75,6 @@ void set_imprimir(SET *s){
 // retorna um set que é a união de todos os elementos contidos
 // nos sets A e B dados 
 // adicionamos cada elemento no set final, indo elemento por elemento 
-// portanto a complexidade será na ordem de O(n+m)
-// sendo n o tamanho do Set A e m o tamanho do Set B 
 SET *set_uniao(SET *A, SET *B){
 
 	SET *uniao = set_criar() ; 
