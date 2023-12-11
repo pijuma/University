@@ -241,7 +241,7 @@ bool avl_buscar(AVL *T, int chave){
 	return buscar_avl_no(T->raiz, chave) ; 
 } 
 
-// imprime o percurso em-ordem - O(N)
+// imprime o percurso em-ordem 
 void dfs(NO *node){
 	
 	if(node == NULL) return ; 
@@ -258,7 +258,7 @@ void avl_dfs(AVL *T){
 }
 
 // insere os elementos da árvore que contém node numa árvore copia
-// utilizada na função set_união - O(n) 
+// utilizada na função set_união 
 void adicionar_elementos(AVL **copia, NO *node){
 	
 	if(node == NULL) return ; 
@@ -280,7 +280,6 @@ void avl_adicionar_elementos(AVL **copia, AVL *other){
 }
 
 // percorremos a menor e fazemos a busca na maior para ficar mais otimizado
-// fica O(menor*log(maior)) ao invés de O(maior*log(menor))
 
 void avl_percurso_comum(AVL **final, AVL *maior, NO *node){
 
