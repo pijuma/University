@@ -4,6 +4,7 @@ struct set{
 	AVL *T ;  
 } ;
 
+// função que aloca a memória para criação de um SET, criando também a AVL interna a esse 
 SET *set_criar(void){
 	
 	SET *set = (SET *) malloc(sizeof(SET)) ; 
@@ -16,15 +17,16 @@ SET *set_criar(void){
 
 }
 
-// função que checa se um elemento pertence ao set 
-// O(log(n)) - mesma complexidade da busca da avl 
+// função que checa se um elemento pertence ao set - chama a função buscar do TAD AVL 
 
 bool set_pertence(SET *A, int elemento){
 	if(A == NULL) return 0 ;
 	return avl_buscar(A->T, elemento) ;
 }
 
-// insere um novo elemento no set - caso já não exista
+// insere um novo elemento no set - caso ele não exista ainda no mesmo 
+// para isso checamos se ele já existe, foi uma forma que escolhemos de lidar com possíveis perda de memória
+// por criar itens que serão perdidos por serem repetidos na estrutura
 bool set_inserir (SET *s, int elemento){
 	
 	if(s == NULL) return 0 ; 
@@ -39,7 +41,8 @@ bool set_inserir (SET *s, int elemento){
 
 }
 
-// remove um elemento do set, caso ele exista
+// remove o "elemento" do set, caso ele exista (checagem feita no TAD AVL (avl_remover))
+// para isso faz uma busca no set para checar se ele exista
 bool set_remover(SET *s, int elemento){
 	
 	if(s == NULL) return 0 ; 
@@ -49,6 +52,9 @@ bool set_remover(SET *s, int elemento){
 	return avl_remover(s->T, elemento) ;
 
 }
+
+// função para desalocar a memória do SET após o uso - chama o TAD AVL para desalocar a AVL 
+// os nós e itens utilizados por ela 
 
 void set_apagar(SET **s){
 	
@@ -72,7 +78,7 @@ void set_imprimir(SET *s){
 
 }
 
-// retorna um set que é a união de todos os elementos contidos
+// retorna um set (uniao) que é a união de todos os elementos contidos
 // nos sets A e B dados 
 // adicionamos cada elemento no set final, indo elemento por elemento 
 SET *set_uniao(SET *A, SET *B){
@@ -86,9 +92,9 @@ SET *set_uniao(SET *A, SET *B){
 }
 
 // retorna um set que contem os elementos comuns dos sets A e B 
-// fica O(menor*log(maior))
-// isso pois percorremos a menor avl checando se o 
-// elemento está contido também na maior avl
+// percorremos a menor avl checando se o 
+// elemento está contido também na maior avl para que fique mais rápido
+// comum, set retornado, representa a intersecção dos SET A e SET B 
 SET *set_interseccao(SET *A, SET *B){
 
 	SET *comum = set_criar() ;
