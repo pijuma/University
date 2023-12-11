@@ -1,0 +1,42 @@
+RELATÓRIO - PROJETO 2 
+
+-> Integrantes:
+- Bruno Figueiredo Lima - 14562383
+- Pietra Gullo Salgado Chaves - 14603822
+
+Para o desenvolvimento do TAD Conjunto (SET) foi usada a estrutura de uma árvore binária de busca, de tipo AVL. A justificativa foi a complexidade da ordem de O(log(n)) de operações como inserção/remoção/busca entre os elementos em uma AVL. Essas operações básicas, estando limitadas por uma função logarítmica, irão refletir em um menor tempo computacional para as operações específicas entre conjuntos, como será mostrado ao longo da análise feita neste relatório.
+
+Cabe ressaltar que poderia ser utilizado uma árvore rubro-negra também no lugar, porém por essa ter uma altura um pouco maior (2*log(n)) em relação a AVL (1,44*log(n)), sendo o tempo das operações de ambas influência direta da altura da árvore, a rubro-negra acabaria ficando um pouco mais lenta. Além disso, a árvore rubro-negra acaba realizando mais rotações e operações de rebalanceamento em médio, portanto a melhor escolha seria utilizar AVL para realizar o problema. Assim iremos considerar que para a AVL O(altura) = O(log(n)), pois o 1,44*log(n) é O(log(n)). Tenta enfatizar que as operações sao na ordem de altura. 
+
+Análise da complexidade (Big O) das operações básicas:
+
+
+-> criar um SET (SET *set_criar(void)): apenas aloca espaço na memória para a criação de um Conjunto (e outras estruturas dependentes), e checa se há espaço (!= NULL). Pode ser considerado O(1).
+
+
+-> apagar um conjunto (void set_apagar(SET **s)): apaga toda a memória alocada dinamicamente para o SET. Dentro da chamada da função, é chamada uma função para apagar a AVL que constitui aquele SET. Nessa função de apagar AVL (void avl_apagar(AVL** T)), é chamada uma função recursiva para apagar os nós da árvore (void apagar_avl_no(NO **node)), que realiza um percurso pós-ordem na árvore. Logo, como ele passa por todos os N nós da árvore nessa chamada e os apaga, a complexidade é O(N).
+
+
+-> Inserir um elemento no SET (bool set_inserir (SET *s, int elemento)): para realizar a inserção, apenas chamamos a função de inserir um elemento dentro de uma AVL de tamanho n. Ou seja, a complexidade é O(log(n)), considerando que as operações de rebalanceamento não são muito pesadas (podem ser consideradas O(1)).
+
+
+-> Remover um elemento do SET (bool set_remover(SET *s, int elemento)): para realizar a remoção, apenas chamamos a função de remover um elemento dentro de uma AVL de tamanho n. Ou seja, a complexidade é O(log(n)). 
+
+
+-> Imprimir os elementos armazenados no SET (void set_imprimir(SET *s)): para imprimir, realizamos uma chamada para a função (void avl_dfs(AVL *T)) que, através de chamadas recursivas dentro de uma função auxiliar, percorre a árvore em-ordem e, sendo uma ABB, imprime os elementos já ordenados. Como percorremos cada um dos N nós da AVL, e, para cada um deles, apenas imprimimos seu valor, a complexidade é O(N).
+
+
+ 
+
+
+Análise da complexidade (Big O) das operações específicas:
+
+
+-> Pertence (bool set_pertence(SET *A, int elemento)): apenas chama uma função de buscar elemento dentro da AVL correspondente ao SET. Portanto, a complexidade é O(log(n)) sendo n a quantidade de elementos dentro do conjunto.
+
+
+-> União (SET *set_uniao(SET *A, SET *B)): cria um SET* união e passa o ponteiro duplo para sua árvore AVL como argumento (AVL **copia) na função (void avl_adicionar_elementos(AVL **copia, AVL *other)). Essa função, por sua vez, adiciona todos os elementos contidos na AVL* other para a AVL** copia. Na implementação dessa função, percorremos cada elemento de other (O(size_of_other)) e o inserimos na AVL representada por AVL** copia (O(log(size_of_copia)). Logo essa função tem complexidade: O(size_of_other*(log size_of_copia)). Como, dentro da função de união, chamamos uma vez com AVL* other sendo a AVL do SET* A e outra vez com a AVL* other sendo a AVL do SET* B, podemos interpretar como (sendo a o tamanho de SET* A, e b o de SET* B) uma função que insere (a+b) elementos em uma árvore inicialmente nula. Logo T(a+b) = log(0) + log(1) + ... + log(a+b-1) = O((a+b)*log(a+b)).
+
+
+-> Intersecção (SET *set_interseccao(SET *A, SET *B)): para realizar a intersecção, usamos a função: (AVL *avl_comum(AVL **final, AVL *maior, AVL *menor)), que chama uma função que, recursivamente, percorre os nós de AVL* menor (O(menor)) e checa se esse nó está na AVL* maior (O(log maior)), adicionando (caso esteja) na AVL representada por AVL** final (O(log final)). Logo, a primeira observação é que como log x < x, (x > 0), AVL* menor, para uma melhor complexidade, tem que ser a AVL do menor SET entre A e B, e AVL* maior, a maior. Logo, sendo, sem perda de generalidade, SET* A o menor dos sets, temos, como complexidade: O(a*(log(b)+log(a+b))) = (O(a*log(a+b)))
+
