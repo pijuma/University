@@ -224,7 +224,7 @@ bool avl_inserir(AVL *T, ITEM *item){
 
 } 
 
-// busca pelo nó que guarda a chave - O(log(n))
+// busca pelo nó que guarda a chave 
 bool buscar_avl_no(NO *node, int chave){
 	
 	if(node == NULL) return 0 ; 
