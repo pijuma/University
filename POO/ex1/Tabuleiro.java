@@ -85,3 +85,10 @@ public class Tabuleiro {
     }
 
 }
+
+/*
+pra rodar 
+javac Main.java Tabuleiro.java dentro de exercicios 
+dps sai e roda java exercicios.Main 
+Algum jeito melhor?
+*/
