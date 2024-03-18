@@ -1,6 +1,8 @@
 package exercicio1;
 
 import java.util.Scanner;
+import java.util.ArrayList ;
+import java.util.Collections ;
 
 /*
 considerei que
@@ -20,9 +22,19 @@ public class Tabuleiro {
         table = new int[n][m] ;
         this.xvazio = 0 ;
         this.yvazio = 0 ;
-        for(int i = 0 ; i < n ; i++){
-            for(int j = 0 ; j < table[i].length ; j++){
-                table[i][j] = scanner.nextInt() ;
+        ArrayList<String> lista = new ArrayList<>() ;
+        for(int i = 1 ; i < n*n ; i++){
+            lista.add(Integer.toString(i)) ;
+        }
+        Collections.shuffle(lista) ;
+        int ct = 0 ;
+        for(int i = 0 ; i < n ; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j && i == 0) {
+                    table[i][j] = 0;
+                    continue;
+                }
+                table[i][j] = Integer.parseInt(lista.get(ct++));
             }
         }
     }
@@ -85,10 +97,3 @@ public class Tabuleiro {
     }
 
 }
-
-/*
-pra rodar 
-javac Main.java Tabuleiro.java dentro de exercicios 
-dps sai e roda java exercicios.Main 
-Algum jeito melhor?
-*/
