@@ -14,27 +14,37 @@ considerei que só acaba quando a posição vazia estiver no canto (0, 0)
 o programa só encerra quando acha uma matriz que é solução
  */
 public class Tabuleiro {
-    Scanner scanner = new Scanner(System.in);
     private int[][] table ; // cria objeto matriz
     int xvazio, yvazio ;
+    private Scanner scanner; // colocar como atributo privado da classe o scanner usando na main
     // posicao vazia sempre é (0, 0) inicialmente
-    public Tabuleiro(int n, int m) {
+    public Tabuleiro(int n, int m, int op, Scanner scanner) {
         table = new int[n][m] ;
         this.xvazio = 0 ;
         this.yvazio = 0 ;
-        ArrayList<String> lista = new ArrayList<>() ;
-        for(int i = 1 ; i < n*n ; i++){
-            lista.add(Integer.toString(i)) ;
-        }
-        Collections.shuffle(lista) ;
-        int ct = 0 ;
-        for(int i = 0 ; i < n ; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i == j && i == 0) {
-                    table[i][j] = 0;
-                    continue;
+        this.scanner = scanner ; // inicializando as coisas
+        if(op==1) { //matriz aleatoria
+            ArrayList<String> lista = new ArrayList<>() ; // cria um array - similar ao "vector"
+            for(int i = 1 ; i < n*n ; i++){
+                lista.add(Integer.toString(i)) ;
+            }
+            Collections.shuffle(lista) ;//embaralha
+            int ct = 0 ;
+            for(int i = 0 ; i < n ; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i == j && i == 0) {
+                        table[i][j] = 0;
+                        continue;
+                    }
+                    table[i][j] = Integer.parseInt(lista.get(ct++)); // pega o valor da pos ct
                 }
-                table[i][j] = Integer.parseInt(lista.get(ct++));
+            }
+        }
+        else{
+            for(int i = 0 ; i < n ; i++){
+                for(int j = 0 ; j < n ; j++){
+                    table[i][j] = scanner.nextInt(); //caso o usuario queira inserir manualmente
+                }
             }
         }
     }
@@ -43,7 +53,7 @@ public class Tabuleiro {
         return x >= 0 && y >= 0 && x < table.length && y < table[x].length ;
     }
 
-    public void getLeft(){
+    public void getLeft(){ //metodos para movimentacao
         if(!valid(xvazio, yvazio+1)) return ;
         int baixo = table[xvazio][yvazio+1] ;
         System.out.println(baixo);
@@ -75,17 +85,18 @@ public class Tabuleiro {
         xvazio-- ;
     }
 
-    public void printMatrix(){
+    public void printMatrix(){ //metodo para imprimir a matriz
         for(int i = 0 ; i < table.length ; i++){
             for(int j = 0 ; j < table[i].length ; j++){
-                System.out.print(table[i][j] + " ");
+                System.out.print(table[i][j] + " "); // imprime sem quebra de linha
             }
-            System.out.println();
+            System.out.println();//imprime quebra de linha
         }
     }
 
-    public boolean findSolution(){
+    public boolean findSolution(){ //achou solucao?
         int ct = 1 ;
+        if(table[0][0] != 0) return false ;
         for(int i = 0 ; i < table.length ; i++){
             for(int j = 0 ; j < table[i].length ; j++){
                 if(i == 0 && j == 0) continue ;
