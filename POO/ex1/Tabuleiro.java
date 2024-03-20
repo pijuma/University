@@ -1,8 +1,6 @@
 package exercicio1;
 
 import java.util.Scanner;
-import java.util.ArrayList ;
-import java.util.Collections ;
 
 /*
 considerei que
@@ -11,40 +9,21 @@ considerei que
 6 7 8
 é uma solução, pois o 0 representa uma posição vazia,
 considerei que só acaba quando a posição vazia estiver no canto (0, 0)
-o programa só encerra quando acha uma matriz que é solução
  */
 public class Tabuleiro {
     private int[][] table ; // cria objeto matriz
     int xvazio, yvazio ;
     private Scanner scanner; // colocar como atributo privado da classe o scanner usando na main
-    // posicao vazia sempre é (0, 0) inicialmente
-    public Tabuleiro(int n, int m, int op, Scanner scanner) {
-        table = new int[n][m] ;
-        this.xvazio = 0 ;
-        this.yvazio = 0 ;
-        this.scanner = scanner ; // inicializando as coisas
-        if(op==1) { //matriz aleatoria
-            ArrayList<String> lista = new ArrayList<>() ; // cria um array - similar ao "vector"
-            for(int i = 1 ; i < n*n ; i++){
-                lista.add(Integer.toString(i)) ;
-            }
-            Collections.shuffle(lista) ;//embaralha
-            int ct = 0 ;
-            for(int i = 0 ; i < n ; i++) {
-                for (int j = 0; j < n; j++) {
-                    if (i == j && i == 0) {
-                        table[i][j] = 0;
-                        continue;
-                    }
-                    table[i][j] = Integer.parseInt(lista.get(ct++)); // pega o valor da pos ct
+    public Tabuleiro(int n, String[] valores, Scanner scanner) {
+        table = new int[n][n] ;
+        this.scanner = scanner ; // inicializando as coisa
+        int id = 0 ;
+        for(int i = 0 ; i < n ; i++) {
+            for (int j = 0; j < n; j++) {
+                if( Integer.parseInt(valores[id]) == 0){
+                    this.xvazio = i ; this.yvazio = j ;
                 }
-            }
-        }
-        else{
-            for(int i = 0 ; i < n ; i++){
-                for(int j = 0 ; j < n ; j++){
-                    table[i][j] = scanner.nextInt(); //caso o usuario queira inserir manualmente
-                }
+                table[i][j] = Integer.parseInt(valores[id++]); //caso o usuario queira inserir manualmente
             }
         }
     }
@@ -86,12 +65,22 @@ public class Tabuleiro {
     }
 
     public void printMatrix(){ //metodo para imprimir a matriz
-        for(int i = 0 ; i < table.length ; i++){
-            for(int j = 0 ; j < table[i].length ; j++){
-                System.out.print(table[i][j] + " "); // imprime sem quebra de linha
-            }
-            System.out.println();//imprime quebra de linha
+        for(int j = 0 ; j < table.length ; j++){
+            System.out.print("+------");
         }
+        System.out.println("+");
+        for(int i = 0 ; i < table.length ; i++){
+            System.out.print("|");
+            for(int j = 0 ; j < table.length ; j++){
+                System.out.print("   " + table[i][j] + "  |"); // imprime sem quebra de linha
+            }
+            System.out.println();
+            for(int j = 0 ; j < table.length ; j++){
+                System.out.print("+------");
+            }
+            System.out.println("+"); //imprime com quebra de linha
+        }
+        System.out.println();
     }
 
     public boolean findSolution(){ //achou solucao?
