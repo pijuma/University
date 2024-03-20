@@ -8,26 +8,34 @@ public class Main {
     static public void main(String[] agrs) {
 
         Scanner scanner = new Scanner(System.in);
-
-        int n = scanner.nextInt() ;
-        int op = scanner.nextInt() ; // op = 1 entrada aleatoria/ op = 0 usuario digita
-
         //considerar o 0 como posição vazia
         // o usuario deve sempre colocar a posicao (0, 0) como vazia
 
-        Tabuleiro t1 = new Tabuleiro(n, n, op, scanner) ;
-        System.out.println("matriz inicial:\n");
+        String entrada = scanner.nextLine() ;
+        String[] valores = entrada.split(" ") ;
+        int n = (int) Math.sqrt(valores.length) ;
+        if(n*n != valores.length){
+            System.out.println("nao forma matriz quadrada");
+            return ;
+        }
+
+        Tabuleiro t1 = new Tabuleiro(n, valores, scanner) ;
+        String mov = scanner.nextLine() ;
+
         t1.printMatrix();
 
         // o usuario digita o movimento
-        while(!t1.findSolution()){ // enquanto nao achou solucao, continue movimentando
-            char type = scanner.next().charAt(0);
-            if(type == 'D') t1.getDown();
-            else if(type == 'L') t1.getLeft();
-            else if(type == 'U') t1.getUp();
+        for(int i = 0 ; i < mov.length() ; i++) { // enquanto nao achou solucao, continue movimentando
+            char type = mov.charAt(i);
+            if (type == 'd') t1.getDown();
+            else if (type == 'l') t1.getLeft();
+            else if (type == 'u') t1.getUp();
             else t1.getRight();
             t1.printMatrix();
         }
-        System.out.println("terminou yey\n");
+
+        if(t1.findSolution()) System.out.println("Posição final: true\n") ;
+        else System.out.println("Posição final: false\n");
+
     }
 }
