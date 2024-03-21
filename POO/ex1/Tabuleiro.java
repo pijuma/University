@@ -1,5 +1,3 @@
-package exercicio1;
-
 import java.util.Scanner;
 
 /*
@@ -9,6 +7,7 @@ considerei que
 6 7 8
 é uma solução, pois o 0 representa uma posição vazia,
 considerei que só acaba quando a posição vazia estiver no canto (0, 0)
+o programa só encerra quando acha uma matriz que é solução
  */
 public class Tabuleiro {
     private int[][] table ; // cria objeto matriz
@@ -35,7 +34,6 @@ public class Tabuleiro {
     public void getLeft(){ //metodos para movimentacao
         if(!valid(xvazio, yvazio+1)) return ;
         int baixo = table[xvazio][yvazio+1] ;
-        System.out.println(baixo);
         table[xvazio][yvazio+1] = 0 ;
         table[xvazio][yvazio] = baixo ;
         yvazio++ ;
@@ -72,7 +70,9 @@ public class Tabuleiro {
         for(int i = 0 ; i < table.length ; i++){
             System.out.print("|");
             for(int j = 0 ; j < table.length ; j++){
-                System.out.print("   " + table[i][j] + "  |"); // imprime sem quebra de linha
+                // %3d formata o numero, colocando espaços em branco caso o numero seja menor
+                //pra sempre o quadrado da tabela ter o mesmo tamanho (3)
+                System.out.printf(" %3d  |", + table[i][j]); // imprime sem quebra de linha
             }
             System.out.println();
             for(int j = 0 ; j < table.length ; j++){
