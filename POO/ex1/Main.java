@@ -1,11 +1,7 @@
-package exercicio1;
-
-import exercicio1.Tabuleiro;
-
 import java.util.Scanner;
 
 public class Main {
-    static public void main(String[] agrs) {
+    static public void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
         //considerar o 0 como posição vazia
@@ -13,14 +9,10 @@ public class Main {
 
         String entrada = scanner.nextLine() ;
         String[] valores = entrada.split(" ") ;
+        String mov = scanner.nextLine() ;
         int n = (int) Math.sqrt(valores.length) ;
-        if(n*n != valores.length){
-            System.out.println("nao forma matriz quadrada");
-            return ;
-        }
 
         Tabuleiro t1 = new Tabuleiro(n, valores, scanner) ;
-        String mov = scanner.nextLine() ;
 
         t1.printMatrix();
 
@@ -34,8 +26,8 @@ public class Main {
             t1.printMatrix();
         }
 
-        if(t1.findSolution()) System.out.println("Posição final: true\n") ;
-        else System.out.println("Posição final: false\n");
+        if(t1.findSolution()) System.out.println("Posicao final: true") ;
+        else System.out.println("Posicao final: false");
 
     }
 }
