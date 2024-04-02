@@ -7,6 +7,7 @@ str2: 	.asciz "O fatorial é: "
 	.globl main
 
 main:
+	#pode usar li a7, 4
 	addi a7, zero, 4 #colocar em a7 pra imprimir string
 	la a0, str1 #passar a palavra a ser impressa 
 	ecall 
