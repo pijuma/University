@@ -102,7 +102,7 @@ fim_jogo:
 	ecall 
  
 	la t5, head # pego o endereco do head (NAO eh o valor do head que aponta para o primeiro no)
-	lw t5,(t5) # armazeno o valor que ta no head (o endereco do primeiro no)
+	lw t5,0(t5) # armazeno o valor que ta no head (o endereco do primeiro no)
  
 #t1 e contador (que armazenava a quantidade de tentativas) 
 #imprime os chutes
