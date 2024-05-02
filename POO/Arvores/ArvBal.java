@@ -14,6 +14,8 @@ public class ArvBal extends Binaria{
 
     //percorrer o vetor ordenado
     //mudar array colocando a nova arvore
+    //pego o valor do meio coloco como nó atual e passo pra esquerda e direita colocando
+    // os valores menores que o nó na esq [l, mid-1] e maiores que o nó na direita [mid+1, r]
     protected void recursive_balance(int node, int l, int r, String []ord){
         if(l > r) return ;
         if(node >= this.TamMax) return ;
@@ -24,7 +26,7 @@ public class ArvBal extends Binaria{
         recursive_balance((2*node)+2, mid+1, r, ord);
     }
 
-    //percorrer esq atual dir
+    //percorrer esq atual dir -> dfs
     protected void ordenar(int node, String[] ord){
         if(node >= this.TamMax) return ;
         if(array[node] == null) return ;
@@ -50,12 +52,15 @@ public class ArvBal extends Binaria{
         //em array sera guardado a nova arvore balanceada
     }
 
+    // percorre todos nós para ver se a arvore está balanceada
+    // ou seja se a altura de duas subs "irmãs" difere em no máximo 1
     protected boolean check_alt(int node){
         if(array[node] == null) return true ;
         boolean ok = check_alt(nodeLeft(node))&check_alt(nodeRight(node)) ;
         if(Math.abs(get_alt(nodeLeft(node)) - get_alt(nodeRight(node))) > 1) return false ;
         return ok ;
     }
+
     //diferenca das alturas no max 1 sempre
     @Override
     protected  boolean isBalance(){
