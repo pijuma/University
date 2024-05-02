@@ -5,6 +5,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in) ;
         int n = 20 ;
+        //criar os objetos, cada arvore de um tipo
         ArvBal balanced = new ArvBal(n) ;
         Binaria binaria = new Binaria(n) ;
         AVL avl = new AVL(n) ;
@@ -13,7 +14,7 @@ public class Main {
             String at;
             at = scanner.nextLine();
             String[] vec = at.split(" ");
-
+            //ler as inserções e remoções
             switch (vec[0]) {
 
                 case "i":
@@ -28,6 +29,8 @@ public class Main {
                     break;
             }
         }
+        //imprimir as arvores finais de cada tipo
+        //usando o metotodo ToString implementado
         System.out.println(binaria.ToString());
         System.out.println();
         System.out.println(balanced.ToString());
