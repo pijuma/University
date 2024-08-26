@@ -29,22 +29,19 @@ Class professor{
 + getProfessor() 
 }
 
-Usuario <|-- estudante
 
+<> ternaria 
+
+estudante "0..1" -- ternaria 
+avaliacaoDisciplina "0..1" - ternaria 
+Usuario <|-- estudante
+ternaria -- "0..1" disciplina 
 Usuario <|-- professor
-turma  <|-- estudante
-turma <|-- professor 
- 
-Class turma{
-- String codigoDisciplina 
-- String listaEstudante[]
-- String idProfessor 
-+ String listHorarios[]
-- String periodoTurma
-+ setTurma() 
-+ getTurma() 
-+ matricualrEstudante() 
-}
+turma "1..*" <-- "1..*" estudante
+turma "1..*" <-- "1" professor 
+turma "1..*" <-- "1" disciplina: turma
+horario "1..*" <.. "1" turma
+turma <.. professor 
 
 Class avaliacaoDisciplina{
 - String codigoEstudante
@@ -58,13 +55,25 @@ Class avaliacaoDisciplina{
 + getNotas() 
 }
 
-Class disciplinas{
+Class disciplina{
 - String codigoDisciplina 
 - String nomeDisciplina
 - Integer tipoDisciplina
 + setDisciplina()
 + getDisciplina()
 }
+
+Class turma{
+- String codigoDisciplina 
+- String listaEstudante[]
+- String idProfessor 
++ String listHorarios[]
+- String periodoTurma
++ setTurma() 
++ getTurma() 
++ matricualrEstudante() 
+}
+
 
 Class horario{
 - String dia 
