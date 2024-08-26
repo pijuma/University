@@ -1,0 +1,79 @@
+@startuml
+Usuario <|-- Estudante
+
+Usuario <|-- Professor
+
+Class Usuario{
+
+- String idUsuario
+
+- String nomeUsuario
+
+- String emailUsuario
+
++setUsuario(id)
+
++getUsuario(id)
+
+}
+
+Class estudante{
+- String genero 
+- String periodo 
++ setEstudante() 
++ getEstudante()
++ getDisciplinasMatriculadas() 
++ getCronograma() 
+}
+
+Class professor{ 
+- String salaProfessor 
+- String telefoneProfessor 
++ setProfessor() 
++ getProfessor() 
+}
+
+Class turma{
+- String codigoDisciplina 
+- String listaEstudante[]
+- String idProfessor 
++ String listHorarios[]
+- String periodoTurma
++ setTurma() 
++ getTurma() 
++ matricualrEstudante() 
+}
+
+Class avaliacaoDisciplina{
+- String codigoEstudante
+- String codigoDisciplina 
+- Double frequencia
+- Double listaNotas[]
+- String pesosNotas[]
+- String mediaFinal 
++ calcularMediaFinal()
++ setNotas() 
++ getNotas() 
+}
+
+Class disciplinas{
+- String codigoDisciplina 
+- String nomeDisciplina
+- Integer tipoDisciplina
++ setDisciplina()
++ getDisciplina()
+}
+
+Class horario{
+- String dia 
+- String horaInicio 
+- String horaFinal 
+- String local 
+- String idHorario 
++ setHorario() 
+- getHorario()
++ setLocal()
++ getLocal()
+}
+
+@enduml
