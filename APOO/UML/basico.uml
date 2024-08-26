@@ -1,8 +1,4 @@
 @startuml
-Usuario <|-- Estudante
-
-Usuario <|-- Professor
-
 Class Usuario{
 
 - String idUsuario
@@ -33,6 +29,12 @@ Class professor{
 + getProfessor() 
 }
 
+Usuario <|-- estudante
+
+Usuario <|-- professor
+turma  <|-- estudante
+turma <|-- professor 
+ 
 Class turma{
 - String codigoDisciplina 
 - String listaEstudante[]
@@ -75,5 +77,4 @@ Class horario{
 + setLocal()
 + getLocal()
 }
-
 @enduml
