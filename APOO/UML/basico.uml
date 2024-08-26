@@ -29,32 +29,6 @@ Class professor{
 + getProfessor() 
 }
 
-
-<> ternaria 
-
-estudante "0..1" -- ternaria 
-avaliacaoDisciplina "0..1" - ternaria 
-Usuario <|-- estudante
-ternaria -- "0..1" disciplina 
-Usuario <|-- professor
-turma "1..*" <-- "1..*" estudante
-turma "1..*" <-- "1" professor 
-turma "1..*" <-- "1" disciplina: turma
-horario "1..*" <.. "1" turma
-turma <.. professor 
-
-Class avaliacaoDisciplina{
-- String codigoEstudante
-- String codigoDisciplina 
-- Double frequencia
-- Double listaNotas[]
-- String pesosNotas[]
-- String mediaFinal 
-+ calcularMediaFinal()
-+ setNotas() 
-+ getNotas() 
-}
-
 Class disciplina{
 - String codigoDisciplina 
 - String nomeDisciplina
@@ -74,6 +48,30 @@ Class turma{
 + matricualrEstudante() 
 }
 
+
+<> ternaria 
+
+estudante "0..1" -- ternaria 
+avaliacaoDisciplina "0..1" - ternaria 
+Usuario <|-- estudante
+ternaria -- "0..1" disciplina 
+Usuario <|-- professor
+turma "1..*" <-- "1..*" estudante
+turma "1..*" <-- "1" disciplina: turma
+horario "1..*" <-- "1" turma
+turma "1..*" <-- "1" professor: turma  
+
+Class avaliacaoDisciplina{
+- String codigoEstudante
+- String codigoDisciplina 
+- Double frequencia
+- Double listaNotas[]
+- String pesosNotas[]
+- String mediaFinal 
++ calcularMediaFinal()
++ setNotas() 
++ getNotas() 
+}
 
 Class horario{
 - String dia 
