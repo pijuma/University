@@ -1,4 +1,4 @@
-@startuml
+.m@startuml
 Class Usuario{
 
 - String idUsuario
